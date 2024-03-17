@@ -5,6 +5,8 @@ url = "https://letterboxd.com/schaffrillas/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
 
+# Functions for getting and displaying the users data
+
 def favoriteMovies():
     favoriteList = doc.findAll("li", attrs={"class": "poster-container favourite-film-poster-container"})
     for name in favoriteList:
