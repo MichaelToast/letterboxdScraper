@@ -12,12 +12,10 @@ def favoriteMovies():
         print(tag['alt'])
 #favoriteMovies()
 
-# this works correctly
 def extractRatingCount(word):
     res = [int(i) for i in (str(word)).split() if i.isdigit()]
     return (res)
 
-#this works correctly
 def extractRatingPercentage(word):
     res = str(word).split()
     length = len(res)
@@ -34,25 +32,17 @@ def ratingPercentages():
         numberRatings.append(extractRatingCount(section))
         numberPercentages.append(extractRatingPercentage(section))
     return
-
-#ratingPercentages()
     
 
 # most recent review
 # Film Type Percentage - top scores (letter box top 100, IMB top, oscors)
 # favorite decade
 # favorite directors
+
+#current practice account: 
 # https://letterboxd.com/schaffrillas/stats/
 
 
-
-
 print(":)")
-print("this works")
 
-
-#print(doc)
-
-
-
-#To run: python main.py
+#To run Code: python main.py
