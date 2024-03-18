@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
+# Patreon Account used for testing: 
 url = "https://letterboxd.com/schaffrillas/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
@@ -34,17 +35,37 @@ def ratingPercentages():
         numberRatings.append(extractRatingCount(section))
         numberPercentages.append(extractRatingPercentage(section))
     return
-    
 
-# most recent review
-# Film Type Percentage - top scores (letter box top 100, IMB top, oscors)
-# favorite decade
-# favorite directors
+# Function works but will need another for "pro" Users
+def isPatron():
+    patron = doc.findAll("span", attrs={"class": "badge -patron"})
+    if len(patron) == 0:
+        return False
+    else:
+        return True
+#isPatron()
 
-#current practice account: 
-# https://letterboxd.com/schaffrillas/stats/
+userName = doc.find("span", attrs={"class": "badge -patron"})
+
+#favorite film types:
+#first, need to find a way to open the Data page
+#favoriteGenres = doc.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
+
+
+
+
 
 
 print(":)")
 
 #To run Code: python main.py
+'''
+TO DO LIST:
+    - Find is "pro" user
+    - Username
+    - Film Type Percentage - top scores (letter box top 100, IMB top, oscors)
+    - Favorite decade
+    - Favorite directors
+    - Rework code to work with any type of user (paid or not paid)
+
+'''
