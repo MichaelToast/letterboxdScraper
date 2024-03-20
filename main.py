@@ -45,13 +45,16 @@ def isPatron():
         return True
 #isPatron()
 
-userName = doc.find("span", attrs={"class": "badge -patron"})
+#Getting their user name
+userName = (doc.find("span", attrs={"class": "displayname tooltip"})).text.strip()
+print(f"SCREEN NAME {userName}")
+#getting their account name
+userName =(doc.find("span", attrs={"class": "displayname tooltip"}))
+print(f"ACCOUNT NAME: {userName["title"]}")
 
 #favorite film types:
 #first, need to find a way to open the Data page
 #favoriteGenres = doc.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
-
-
 
 
 
@@ -67,5 +70,4 @@ TO DO LIST:
     - Favorite decade
     - Favorite directors
     - Rework code to work with any type of user (paid or not paid)
-
 '''
