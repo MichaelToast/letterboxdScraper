@@ -45,18 +45,27 @@ def isPatron():
         return True
 #isPatron()
 
-#Getting their user name
-userName = (doc.find("span", attrs={"class": "displayname tooltip"})).text.strip()
-print(f"SCREEN NAME {userName}")
-#getting their account name
-userName =(doc.find("span", attrs={"class": "displayname tooltip"}))
-print(f"ACCOUNT NAME: {userName["title"]}")
+def getUserName():
+    userName = (doc.find("span", attrs={"class": "displayname tooltip"})).text.strip()
+    return userName
+
+def getAccountName():
+    accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
+    return (accountName["title"])
 
 #favorite film types:
 #first, need to find a way to open the Data page
+infoUrl = "https://letterboxd.com/" + str(getAccountName()) + "/year/2024/"
+resultTwo = requests.get(infoUrl)
+docTwo = BeautifulSoup(resultTwo.text, "html.parser")
+favoriteGenres = docTwo.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
+#for fav in favoriteGenres:
+    #print(fav)
+
+
+
 #favoriteGenres = doc.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
-
-
+#print(favoriteGenres)
 
 
 print(":)")
