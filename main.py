@@ -67,7 +67,13 @@ def favGenresInfo():
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
         print(f"{title.text.strip()} - {info.text.strip()}")
 
-
+# Favorite Directors
+def favDirectorsInfo():
+    favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
+    for dir in (favoriteDirectors[0]).findAll("div", attrs={"class":"yir-person-list-data"}):
+        name = (dir.find("p", attrs={"class": "yir-secondary-heading"})).text.strip()
+        filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
+        print(f"{name} - {filmCount}")
 
 
 print(":)")
@@ -75,9 +81,8 @@ print(":)")
 #To run Code: python main.py
 '''
 TO DO LIST:
-    - Find is "pro" user
-    - Username
-    - Film Type Percentage - top scores (letter box top 100, IMB top, oscors)
+    - Find if "pro" user
+    - Film Type Percentage - top scores (letter box top 100, IMB top, oscars)
     - Favorite decade
     - Favorite directors
     - Rework code to work with any type of user (paid or not paid)
