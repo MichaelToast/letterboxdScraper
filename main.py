@@ -60,28 +60,14 @@ resultTwo = requests.get(infoUrl)
 
 docTwo = BeautifulSoup(resultTwo.text, "html.parser")
 
-favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
-def favoriteGenresNames(): 
-    favoriteGenresData = (favoriteGenres[0]).findAll("a", attrs={"class": "film-breakdown-graph-bar-label"})
-    for fav in favoriteGenresData:
-        print(fav.text.strip())
-favoriteGenresData = favoriteGenres[0].findAll("span")
-for data in favoriteGenresData:
-    print(data.text.strip())
-
-#print(len(favoriteGenres))
+def favGenresInfo():
+    favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
+    for fav in (favoriteGenres[0]).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
+        title = fav.find("a", attrs={"class": "film-breakdown-graph-bar-label"})
+        info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
+        print(f"{title.text.strip()} - {info.text.strip()}")
 
 
-
-
-
-
-
-
-
-
-#favoriteGenres = doc.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
-#print(favoriteGenres)
 
 
 print(":)")
