@@ -2,7 +2,9 @@ from bs4 import BeautifulSoup
 import requests
 
 # Patreon Account used for testing: 
-url = "https://letterboxd.com/schaffrillas/"
+#url = "https://letterboxd.com/schaffrillas/"
+# pro account:
+url = "https://letterboxd.com/ihe/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
 
@@ -39,11 +41,18 @@ def ratingPercentages():
 # Function works but will need another for "pro" Users
 def isPatron():
     patron = doc.findAll("span", attrs={"class": "badge -patron"})
-    if len(patron) == 0:
+    if (len(patron) == 0):
         return False
     else:
         return True
 #isPatron()
+
+def isPro():
+    pro = doc.findAll("span", attrs={"class": "badge -pro"})
+    if (len(pro) == 0):
+        return False
+    else:
+        return True
 
 def getUserName():
     userName = (doc.find("span", attrs={"class": "displayname tooltip"})).text.strip()
