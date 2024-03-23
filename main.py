@@ -57,10 +57,26 @@ def getAccountName():
 #first, need to find a way to open the Data page
 infoUrl = "https://letterboxd.com/" + str(getAccountName()) + "/year/2024/"
 resultTwo = requests.get(infoUrl)
+
 docTwo = BeautifulSoup(resultTwo.text, "html.parser")
-favoriteGenres = docTwo.findAll("div", attrs={"class": "film-breakdown-graph-bar"}) 
-#for fav in favoriteGenres:
-    #print(fav)
+
+favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
+def favoriteGenresNames(): 
+    favoriteGenresData = (favoriteGenres[0]).findAll("a", attrs={"class": "film-breakdown-graph-bar-label"})
+    for fav in favoriteGenresData:
+        print(fav.text.strip())
+favoriteGenresData = favoriteGenres[0].findAll("span")
+for data in favoriteGenresData:
+    print(data.text.strip())
+
+#print(len(favoriteGenres))
+
+
+
+
+
+
+
 
 
 
