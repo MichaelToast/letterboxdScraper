@@ -70,6 +70,32 @@ def getAccountName():
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
+#Dictionary for Genre
+genreDic = {0:"Action", 0:"Adventure", 0:"Animation", 0:"Comedy", 0:"Crime", 0:"Documentary",
+             0:"Drama", 0:"Family", 0:"Fantasy", 0:"History", 0:"Horror", 0:"Music", 0:"Romance",
+               0:"Science Fiction", 0:"Thriller", 0:"TV Movie", 0:"War", 0:"Wester"}
+
+reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/for/2024/by/activity/"
+resultReviews = requests.get(reviewPageUrl)
+reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
+
+for film in reviewPage.findAll("li", attrs={"data-object-name": "review"}):
+    moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"]))
+    print(moviePageUrl)
+
+# technically I just need the film name, and i open up the letterbox url for it to get the genre
+
+'''
+How to get this part working:
+- Make link: "https://letterboxd.com/24framesofnick/films/reviews/for/2024/by/activity/page/1/"
+- Check if its valid
+- See what number we end on
+- start incrementing the counter
+
+'''
+
+
+# These following function are Pro/Patreon specific Functions
 def statsPage():
     # Opening the Data Page for pro and patron users
     infoUrl = "https://letterboxd.com/" + str(getAccountName()) + "/year/2024/"
@@ -85,7 +111,6 @@ def favGenresInfo():
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
         print(f"{title.text.strip()} - {info.text.strip()}")
 
-# Favorite Directors
 def favDirectorsInfo():
     docTwo = statsPage()
     favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
@@ -103,6 +128,4 @@ TO DO LIST:
     - Find most watched movie
     - Film Type Percentage - top scores (letter box top 100, IMB top, oscars)
     - Favorite decade
-    - Favorite directors
-    - Rework code to work with any type of user (paid or not paid)
 '''
