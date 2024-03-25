@@ -71,19 +71,68 @@ def getAccountName():
     return (accountName["title"])
 
 #Dictionary for Genre
-genreDic = {0:"Action", 0:"Adventure", 0:"Animation", 0:"Comedy", 0:"Crime", 0:"Documentary",
-             0:"Drama", 0:"Family", 0:"Fantasy", 0:"History", 0:"Horror", 0:"Music", 0:"Romance",
-               0:"Science Fiction", 0:"Thriller", 0:"TV Movie", 0:"War", 0:"Wester"}
+genreDic = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
+             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Romance":0,
+               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Wester":0}
 
-reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/for/2024/by/activity/"
-resultReviews = requests.get(reviewPageUrl)
-reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
+# The first activity Page
 
-for film in reviewPage.findAll("li", attrs={"data-object-name": "review"}):
-    moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"]))
-    print(moviePageUrl)
+def reviewGenreStats():
+    #reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
+    reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/"
+    resultReviews = requests.get(reviewPageUrl)
+    reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
 
-# technically I just need the film name, and i open up the letterbox url for it to get the genre
+    # checking to make sure there is actually stuff to read
+    if (reviewPage.find("p", attrs={"class": "ui-block-heading"})) == -1:
+        # We found letterboxd's "No Reviews" message
+        print("They have not writen any reviews")
+        return False
+    else:
+        # seeing how many pages to read
+        pageCount = reviewPage.findAll("li", attrs={"class":"paginate-page"})
+        maxPage = 1
+        if (len(pageCount) != 0):
+            maxPage = int(pageCount[len(pageCount) - 1].text.strip())
+        for i in range(1, (maxPage + 1)):
+            subPageUrl = reviewPageUrl + "page/" + str(i) + "/"
+            # opening the sub page:
+            resultSubPage = requests.get(subPageUrl)
+            subPage = BeautifulSoup(resultSubPage.text, "html.parser")
+            for film in subPage.findAll("li", attrs={"data-object-name": "review"}):
+                # Accessing the Movies Page
+                moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"])) + "genres/"
+                resultmoviePage = requests.get(moviePageUrl)
+                moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+                # Accessing the Specific Names
+                genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
+                genreNames = (genreBlock.findAll("a", href=True))
+                # Updating the dictionary
+                print(f"FOR THIS MOVIE WE HAVE{len(genreNames)} genres")
+                title = moviePage.find("h1", attrs={"class": "headline-1 js-widont prettify"})
+                print(title.text.strip())
+                break
+                for genre in genreNames:
+                    name = str(genre.text.strip())
+                    if (genreDic.get(str(name))):
+                        genreDic.update({str(name) : (genreDic.get(str(name))) + 1})
+                    else:
+                        print(f"could not find [{str(name)}] in the dictionary")
+                        break #FOR TESTING
+                break #FOR TESTING
+        
+reviewGenreStats()
+#print(genreDic)
+
+name = "Comedy"
+print("TESTING: ")
+if (genreDic.get(name)):
+    print("yes in dict")
+    genreDic.update({name : (genreDic.get(name)) + 1})
+else:
+    print(f"could not find name: {name} in the dictionary")
+
+
 
 '''
 How to get this part working:
@@ -125,6 +174,7 @@ print(":)")
 #To run Code: python main.py
 '''
 TO DO LIST:
+    - Check to see if a not found page
     - Find most watched movie
     - Film Type Percentage - top scores (letter box top 100, IMB top, oscars)
     - Favorite decade
