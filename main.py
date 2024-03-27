@@ -72,14 +72,14 @@ def getAccountName():
 
 #Dictionary for Genre
 genreDic = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
-             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Romance":0,
-               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Wester":0}
+             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
+               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
 
 # The first activity Page
 
 def reviewGenreStats():
-    #reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
-    reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/"
+    reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
+    #reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/" #This is for testing purposes only
     resultReviews = requests.get(reviewPageUrl)
     reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
 
@@ -94,6 +94,7 @@ def reviewGenreStats():
         maxPage = 1
         if (len(pageCount) != 0):
             maxPage = int(pageCount[len(pageCount) - 1].text.strip())
+        # Accessing the Review page
         for i in range(1, (maxPage + 1)):
             subPageUrl = reviewPageUrl + "page/" + str(i) + "/"
             # opening the sub page:
@@ -108,29 +109,16 @@ def reviewGenreStats():
                 genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
                 genreNames = (genreBlock.findAll("a", href=True))
                 # Updating the dictionary
-                print(f"FOR THIS MOVIE WE HAVE{len(genreNames)} genres")
-                title = moviePage.find("h1", attrs={"class": "headline-1 js-widont prettify"})
-                print(title.text.strip())
-                break
                 for genre in genreNames:
                     name = str(genre.text.strip())
-                    if (genreDic.get(str(name))):
+                    if (genreDic.get(str(name)) != None):
                         genreDic.update({str(name) : (genreDic.get(str(name))) + 1})
                     else:
                         print(f"could not find [{str(name)}] in the dictionary")
-                        break #FOR TESTING
-                break #FOR TESTING
-        
+ 
 reviewGenreStats()
-#print(genreDic)
 
-name = "Comedy"
-print("TESTING: ")
-if (genreDic.get(name)):
-    print("yes in dict")
-    genreDic.update({name : (genreDic.get(name)) + 1})
-else:
-    print(f"could not find name: {name} in the dictionary")
+
 
 
 
