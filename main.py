@@ -70,16 +70,15 @@ def getAccountName():
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
-#Dictionary for Genre
-genreDic = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
+#might need to combine to one function
+def StandardFavGenresInfo():
+    # Dictionary For Genres:
+    genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
 
-# The first activity Page
-
-def reviewGenreStats():
-    reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
-    #reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/" #This is for testing purposes only
+    # reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
+    reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/" #This is for testing purposes only
     resultReviews = requests.get(reviewPageUrl)
     reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
 
@@ -111,28 +110,16 @@ def reviewGenreStats():
                 # Updating the dictionary
                 for genre in genreNames:
                     name = str(genre.text.strip())
-                    if (genreDic.get(str(name)) != None):
-                        genreDic.update({str(name) : (genreDic.get(str(name))) + 1})
+                    if (genreDict.get(str(name)) != None):
+                        genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
                     else:
                         print(f"could not find [{str(name)}] in the dictionary")
- 
-reviewGenreStats()
+    # Displaying the Genres:
+    sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
+    for genre in sortedGenres:
+        print(f"{genre[0]} - {genre[1]}")
 
-
-
-
-
-'''
-How to get this part working:
-- Make link: "https://letterboxd.com/24framesofnick/films/reviews/for/2024/by/activity/page/1/"
-- Check if its valid
-- See what number we end on
-- start incrementing the counter
-
-'''
-
-
-# These following function are Pro/Patreon specific Functions
+# These following function are specific for Pro/Patreon specific Functions
 def statsPage():
     # Opening the Data Page for pro and patron users
     infoUrl = "https://letterboxd.com/" + str(getAccountName()) + "/year/2024/"
@@ -140,7 +127,7 @@ def statsPage():
     docTwo = BeautifulSoup(resultTwo.text, "html.parser")
     return docTwo
 
-def favGenresInfo():
+def paidFavGenresInfo():
     docTwo = statsPage()
     favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
     for fav in (favoriteGenres[0]).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
@@ -148,7 +135,7 @@ def favGenresInfo():
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
         print(f"{title.text.strip()} - {info.text.strip()}")
 
-def favDirectorsInfo():
+def paidFavDirectorsInfo():
     docTwo = statsPage()
     favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
     for dir in (favoriteDirectors[0]).findAll("div", attrs={"class":"yir-person-list-data"}):
