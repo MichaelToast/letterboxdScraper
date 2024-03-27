@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 
 # Patreon Account used for testing: 
-#url = "https://letterboxd.com/schaffrillas/"
+# url = "https://letterboxd.com/schaffrillas/"
 # Pro account: 
 # url = "https://letterboxd.com/ihe/"
 # Empty Account: 
@@ -94,12 +94,13 @@ def StandardFavGenresInfo():
         if (len(pageCount) != 0):
             maxPage = int(pageCount[len(pageCount) - 1].text.strip())
         # Accessing the Review page
-        for i in range(1, (maxPage + 1)):
+        for i in range(1, (int (maxPage) + 1)):
             subPageUrl = reviewPageUrl + "page/" + str(i) + "/"
             # opening the sub page:
             resultSubPage = requests.get(subPageUrl)
             subPage = BeautifulSoup(resultSubPage.text, "html.parser")
             for film in subPage.findAll("li", attrs={"data-object-name": "review"}):
+                count = count + 1
                 # Accessing the Movies Page
                 moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"])) + "genres/"
                 resultmoviePage = requests.get(moviePageUrl)
@@ -114,10 +115,22 @@ def StandardFavGenresInfo():
                         genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
                     else:
                         print(f"could not find [{str(name)}] in the dictionary")
-    # Displaying the Genres:
+                        title = moviePage.find("h1", attrs={"class": "headline-1 js-widont prettify"})
+                        print(title.text.strip())
+    # Displaying the top 10 Genres:
     sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
-    for genre in sortedGenres:
-        print(f"{genre[0]} - {genre[1]}")
+    for genre in sortedGenres[:10]:
+        if (genre[1] != 0):
+            print(f"{genre[0]} - {genre[1]}", end = "\0")
+            # For Correct grammar
+            if (genre[1] == 1):
+                print(" film")
+            else:
+                print(" films")
+        else:
+            print("No Films to read from")
+
+StandardFavGenresInfo()
 
 # These following function are specific for Pro/Patreon specific Functions
 def statsPage():
