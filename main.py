@@ -5,14 +5,10 @@ import requests
 # url = "https://letterboxd.com/schaffrillas/"
 # Pro account: 
 # url = "https://letterboxd.com/ihe/"
-# Empty Account: 
-# url = "https://letterboxd.com/rcjohnso/"
 # Standard Account:
 url = "https://letterboxd.com/24framesofnick/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
-
-# Functions for getting and displaying the users data
 
 def favoriteMovies():
     favoriteList = doc.findAll("li", attrs={"class": "poster-container favourite-film-poster-container"})
@@ -70,25 +66,23 @@ def getAccountName():
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
-#might need to combine to one function
 def StandardFavGenresInfo():
     # Dictionary For Genres:
     genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
 
-    # reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
-    reviewPageUrl = "https://letterboxd.com/24framesofnick/films/reviews/for/2018/by/activity/" #This is for testing purposes only
+    reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/"
     resultReviews = requests.get(reviewPageUrl)
     reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
 
-    # checking to make sure there is actually stuff to read
-    if (reviewPage.find("p", attrs={"class": "ui-block-heading"})) == -1:
+    # Checking to make sure there is actually stuff to read
+    if ((reviewPage.find("p", attrs={"class": "ui-block-heading"})) == -1):
         # We found letterboxd's "No Reviews" message
         print("They have not writen any reviews")
         return False
     else:
-        # seeing how many pages to read
+        # Seeing how many pages to read
         pageCount = reviewPage.findAll("li", attrs={"class":"paginate-page"})
         maxPage = 1
         if (len(pageCount) != 0):
@@ -96,39 +90,38 @@ def StandardFavGenresInfo():
         # Accessing the Review page
         for i in range(1, (int (maxPage) + 1)):
             subPageUrl = reviewPageUrl + "page/" + str(i) + "/"
-            # opening the sub page:
             resultSubPage = requests.get(subPageUrl)
             subPage = BeautifulSoup(resultSubPage.text, "html.parser")
-            for film in subPage.findAll("li", attrs={"data-object-name": "review"}):
-                count = count + 1
+
+            for film in subPage.findAll("li", attrs={"data-object-name": "review"}): 
                 # Accessing the Movies Page
                 moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"])) + "genres/"
                 resultmoviePage = requests.get(moviePageUrl)
                 moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
                 # Accessing the Specific Names
                 genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
+                if (genreBlock == None):
+                    # Film does not have any genres or themes to pull from
+                    continue
                 genreNames = (genreBlock.findAll("a", href=True))
-                # Updating the dictionary
+                # Updating the dictionary, if there are no genres/themes, nothing will be added
                 for genre in genreNames:
                     name = str(genre.text.strip())
                     if (genreDict.get(str(name)) != None):
                         genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
-                    else:
-                        print(f"could not find [{str(name)}] in the dictionary")
-                        title = moviePage.find("h1", attrs={"class": "headline-1 js-widont prettify"})
-                        print(title.text.strip())
+    
     # Displaying the top 10 Genres:
     sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
     for genre in sortedGenres[:10]:
         if (genre[1] != 0):
             print(f"{genre[0]} - {genre[1]}", end = "\0")
-            # For Correct grammar
             if (genre[1] == 1):
                 print(" film")
             else:
                 print(" films")
         else:
             print("No Films to read from")
+            break
 
 StandardFavGenresInfo()
 
