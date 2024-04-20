@@ -123,7 +123,22 @@ def StandardFavGenresInfo():
             print("No Films to read from")
             break
 
-StandardFavGenresInfo()
+#StandardFavGenresInfo()
+
+#trying another idea for getting the genres - using the diary instead of the reviews
+diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/"
+resultDiary = requests.get(diaryURL)
+diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
+
+lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
+print(lastPage[len(lastPage) - 1].text.strip())
+
+
+def StandardFavDirectorsInfo():
+    # Reading the users most viewed directors, using a similar method to FavGenres
+    return
+
+
 
 # These following function are specific for Pro/Patreon specific Functions
 def statsPage():
