@@ -1,3 +1,6 @@
+import time
+start_time = time.time()
+
 from bs4 import BeautifulSoup
 import requests
 
@@ -126,12 +129,25 @@ def StandardFavGenresInfo():
 #StandardFavGenresInfo()
 
 #trying another idea for getting the genres - using the diary instead of the reviews
+
 diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/"
 resultDiary = requests.get(diaryURL)
 diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
+#trying to get the page count
 lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
 print(lastPage[len(lastPage) - 1].text.strip())
+
+# trying to get the movie name
+movieName = diaryPage.findAll("div", attrs={"data-film-slug": True})
+#print((movieName[1])["data-film-slug"]) #this works to get the film names
+for film in movieName:        
+    moviePageUrl = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
+    #print(moviePageUrl)
+
+#getting the genres faster:
+movieUrl = "https://letterboxd.com/film/society-of-the-snow/genres/"
+
 
 
 def StandardFavDirectorsInfo():
@@ -166,6 +182,8 @@ def paidFavDirectorsInfo():
 
 
 print(":)")
+print("Process finished --- %s seconds ---" % (time.time() - start_time))
+
 
 #To run Code: python main.py
 '''
