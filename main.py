@@ -70,67 +70,6 @@ def getAccountName():
     return (accountName["title"])
 
 def StandardFavGenresInfo():
-    # Dictionary For Genres:
-    genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
-             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
-               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
-
-    reviewPageUrl = "https://letterboxd.com/" + str(getAccountName()) + "/films/reviews/for/2024/"
-    resultReviews = requests.get(reviewPageUrl)
-    reviewPage = BeautifulSoup(resultReviews.text, "html.parser")
-
-    # Checking to make sure there is actually stuff to read
-    if ((reviewPage.find("p", attrs={"class": "ui-block-heading"})) == -1):
-        # We found letterboxd's "No Reviews" message
-        print("They have not writen any reviews")
-        return False
-    else:
-        # Seeing how many pages to read
-        pageCount = reviewPage.findAll("li", attrs={"class":"paginate-page"})
-        maxPage = 1
-        if (len(pageCount) != 0):
-            maxPage = int(pageCount[len(pageCount) - 1].text.strip())
-        # Accessing the Review page
-        for i in range(1, (int (maxPage) + 1)):
-            subPageUrl = reviewPageUrl + "page/" + str(i) + "/"
-            resultSubPage = requests.get(subPageUrl)
-            subPage = BeautifulSoup(resultSubPage.text, "html.parser")
-
-            for film in subPage.findAll("li", attrs={"data-object-name": "review"}): 
-                # Accessing the Movies Page
-                moviePageUrl = "https://letterboxd.com" + str((film.find("div")["data-target-link"])) + "genres/"
-                resultmoviePage = requests.get(moviePageUrl)
-                moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
-                # Accessing the Specific Names
-                genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
-                if (genreBlock == None):
-                    # Film does not have any genres or themes to pull from
-                    continue
-                genreNames = (genreBlock.findAll("a", href=True))
-                # Updating the dictionary, if there are no genres/themes, nothing will be added
-                for genre in genreNames:
-                    name = str(genre.text.strip())
-                    if (genreDict.get(str(name)) != None):
-                        genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
-    
-    # Displaying the top 10 Genres:
-    sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
-    for genre in sortedGenres[:10]:
-        if (genre[1] != 0):
-            print(f"{genre[0]} - {genre[1]}", end = "\0")
-            if (genre[1] == 1):
-                print(" film")
-            else:
-                print(" films")
-        else:
-            print("No Films to read from")
-            break
-
-#StandardFavGenresInfo()
-
-#trying another idea for getting the genres - using the diary instead of the reviews
-
-def newGenrefunc():
     genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
@@ -188,8 +127,7 @@ def newGenrefunc():
             print("No Films to read from")
             break
 
-
-newGenrefunc()
+StandardFavGenresInfo()
 
 
 
