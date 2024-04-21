@@ -130,23 +130,39 @@ def StandardFavGenresInfo():
 
 #trying another idea for getting the genres - using the diary instead of the reviews
 
-diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/"
+
+diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2029" #202w4 so its equivalent to PRO page
+#diaryURL = "https://letterboxd.com/24framesofnick/films/diary/for/2025/"   
+#diaryURL = "https://letterboxd.com/24framesofnick/films/diary/for/2018/"
 resultDiary = requests.get(diaryURL)
 diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
-#trying to get the page count
 lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
-print(lastPage[len(lastPage) - 1].text.strip())
+
+#need to make sure the page is not empty: 
+# PROBLEM: the tags saying they havn't logged anything are the same for the title page
+textBlock = diaryPage.findAll("p", attrs={"class": "ui-block-heading"})
+result = (textBlock[0].text.strip())
+findered = result.find("logged any")
+print(f"RESULT: {result}")
+print(f"Findered: {findered}")
+
+
+'''
+if (len(lastPage) != 0): 
+    maxPage = int(lastPage[len(lastPage) - 1].text.strip())
+    print(f"MAX PAGE: {maxPage}")
+'''
+
+#print(lastPage[len(lastPage) - 1].text.strip())
+
+
 
 # trying to get the movie name
 movieName = diaryPage.findAll("div", attrs={"data-film-slug": True})
-#print((movieName[1])["data-film-slug"]) #this works to get the film names
 for film in movieName:        
     moviePageUrl = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
     #print(moviePageUrl)
-
-#getting the genres faster:
-movieUrl = "https://letterboxd.com/film/society-of-the-snow/genres/"
 
 
 
