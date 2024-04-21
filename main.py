@@ -131,30 +131,27 @@ def StandardFavGenresInfo():
 #trying another idea for getting the genres - using the diary instead of the reviews
 
 
-diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2029" #202w4 so its equivalent to PRO page
-#diaryURL = "https://letterboxd.com/24framesofnick/films/diary/for/2025/"   
-#diaryURL = "https://letterboxd.com/24framesofnick/films/diary/for/2018/"
+diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2018" #2024 so its equivalent to PRO page
+print(diaryURL)
+#2018 there is only one page, 2024 there are mutliple
 resultDiary = requests.get(diaryURL)
 diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
 lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
 
-#need to make sure the page is not empty: 
-# PROBLEM: the tags saying they havn't logged anything are the same for the title page
-textBlock = diaryPage.findAll("p", attrs={"class": "ui-block-heading"})
-result = (textBlock[0].text.strip())
-findered = result.find("logged any")
-print(f"RESULT: {result}")
-print(f"Findered: {findered}")
+errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
 
+if (errorMessage != -1):
+    print("Users has not reviewed any movies")
+    #return
 
-'''
-if (len(lastPage) != 0): 
+maxPage = 1
+#getting the maximum pageCount
+if (len(lastPage) != 0):
     maxPage = int(lastPage[len(lastPage) - 1].text.strip())
-    print(f"MAX PAGE: {maxPage}")
-'''
+else:
+    print("only one page to read")
 
-#print(lastPage[len(lastPage) - 1].text.strip())
 
 
 
