@@ -161,28 +161,16 @@ def StandardFavDirectorsInfo():
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
             #now have to get the directors
+            directorNames = moviePage.find("section", attrs={"id": "featured-film-header"}).findAll(href=True)
+            for name in directorNames[1:]:
+                # updating the dictionary
+                if (directorsDict.get(str(name.text.strip())) != None):
+                    directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
+                else:
+                    directorsDict.update({(str(name.text.strip())) : 1})
 
-    # Reading the users most viewed directors, using a similar method to FavGenres
     return
-
-#testing dictionary
-name = "JJ"
-tempDic = {}
-if (tempDic.get(str(name)) != None):
-    tempDic.update({"JJ" : 0})
-else: 
-    tempDic.update({"JJ" : 0})
-print(tempDic)
-
-moviepageURL = "https://letterboxd.com/film/mean-girls-2024/genres/"
-resultmoviePage = requests.get(moviepageURL)
-moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
-
-directorNames = moviePage.find("section", attrs={"id": "featured-film-header"}).findAll(href=True)
-
-for name in directorNames[1:]:
-    #Starting from 1 to not print out year
-    print(name.text.strip())
+# StandardFavDirectorsInfo()
 
 
 
