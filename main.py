@@ -75,7 +75,6 @@ def StandardFavGenresInfo():
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
 
     diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024 so its equivalent to PRO page
-    #2018 there is only one page, 2024 there are mutliple
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
@@ -87,7 +86,7 @@ def StandardFavGenresInfo():
         return
 
     maxPage = 1
-    #getting the maximum pageCount
+    # Setting the maximum pageCount
     if (len(lastPage) != 0):
         maxPage = int(lastPage[len(lastPage) - 1].text.strip())
     else:
@@ -103,7 +102,7 @@ def StandardFavGenresInfo():
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
 
-            #now reading the genres
+            # Now reading the genres
             genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
             if (genreBlock == None):
                 # Film does not have any genres or themes to pull from
@@ -115,6 +114,7 @@ def StandardFavGenresInfo():
                 if (genreDict.get(str(name)) != None):
                     genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
 
+    # Displaying the new Genres we collected
     sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
     for genre in sortedGenres[:10]:
         if (genre[1] != 0):
@@ -127,17 +127,63 @@ def StandardFavGenresInfo():
             print("No Films to read from")
             break
 
-StandardFavGenresInfo()
-
-
-
-
-
+#StandardFavGenresInfo()
 
 
 def StandardFavDirectorsInfo():
+    directorsDict = {}
+
+    diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024 so its equivalent to PRO page
+    resultDiary = requests.get(diaryURL)
+    diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
+
+    lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
+    errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
+
+    if (errorMessage != -1):
+        print("Users has not reviewed any movies")
+        return
+
+    maxPage = 1
+    # Setting the maximum pageCount
+    if (len(lastPage) != 0):
+        maxPage = int(lastPage[len(lastPage) - 1].text.strip())
+    else:
+        print("only one page to read")
+    
+    for i in range(1, maxPage + 1):
+        subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
+        resultSubPage = requests.get(subDiaryUrl)
+        subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
+        movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
+        for film in movieList:        
+            moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
+            resultmoviePage = requests.get(moviepageURL)
+            moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+            #now have to get the directors
+
     # Reading the users most viewed directors, using a similar method to FavGenres
     return
+
+#testing dictionary
+name = "JJ"
+tempDic = {}
+if (tempDic.get(str(name)) != None):
+    tempDic.update({"JJ" : 0})
+else: 
+    tempDic.update({"JJ" : 0})
+print(tempDic)
+
+moviepageURL = "https://letterboxd.com/film/mean-girls-2024/genres/"
+resultmoviePage = requests.get(moviepageURL)
+moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+
+directorNames = moviePage.find("section", attrs={"id": "featured-film-header"}).findAll(href=True)
+
+for name in directorNames[1:]:
+    #Starting from 1 to not print out year
+    print(name.text.strip())
+
 
 
 
