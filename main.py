@@ -1,5 +1,6 @@
 import time
 start_time = time.time()
+import os
 
 from bs4 import BeautifulSoup
 import requests
@@ -9,17 +10,21 @@ import requests
 # Pro account: 
 # url = "https://letterboxd.com/ihe/"
 # Standard Account:
+'''
 url = "https://letterboxd.com/24framesofnick/"
 result = requests.get(url)
 doc = BeautifulSoup(result.text, "html.parser")
+'''
 
-def favoriteMovies():
+
+def favoriteMovies(doc):
     favoriteList = doc.findAll("li", attrs={"class": "poster-container favourite-film-poster-container"})
     for name in favoriteList:
         tag = name.find('img')
-        print(tag['alt'])
+        print(f"\t\033[1;36m{tag['alt']}\033[0m")
+        #\t\033[1;35m{tag['alt']}\033[0m
     if (len(favoriteList) == 0):
-        print("User does not list favorite movies")
+        print("\033[1;91mUser does not list favorite movies\033[0m")
 
 # Helper Function to ratingPercentages
 def extractRatingCount(word):
@@ -35,7 +40,7 @@ def extractRatingPercentage(word):
 # Rating Percentage
 numberRatings = []
 numberPercentages = []
-def ratingPercentages():
+def ratingPercentages(doc):
     ratings = doc.findAll("li", attrs={"class": "rating-histogram-bar"})
     for rating in ratings:
         section = (rating.text.strip() )
@@ -46,25 +51,25 @@ def ratingPercentages():
         print("User has not rated any movies")
     return
 
-def isPatron():
+def isPatron(doc):
     patron = doc.findAll("span", attrs={"class": "badge -patron"})
     if (len(patron) == 0):
         return False
     else:
         return True
 
-def isPro():
+def isPro(doc):
     pro = doc.findAll("span", attrs={"class": "badge -pro"})
     if (len(pro) == 0):
         return False
     else:
         return True
 
-def getUserName():
+def getUserName(doc):
     userName = (doc.find("span", attrs={"class": "displayname tooltip"})).text.strip()
     return userName
 
-def getAccountName():
+def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
@@ -209,7 +214,6 @@ def paidFavDirectorsInfo():
 def isValidPage(userLink):
     if ((str(userLink)).find("letterboxd") == -1):
         print("This is a not a letterboxd link")
-        print("Example: https://letterboxd.com/USERNAME/")
         return False
     elif ((str(userLink)).find("/films/") != -1):
         print("This is not the homepage")
@@ -218,6 +222,7 @@ def isValidPage(userLink):
         result = requests.get(userLink)
         docTest = BeautifulSoup(result.text, "html.parser")
         if (docTest.find(attrs={"class" : "error message-dark"})):
+            print("No user account could be found")
             return False
     except:
         print("that is not a valid page")
@@ -225,8 +230,35 @@ def isValidPage(userLink):
     
 def main():
     #seeing if this is a valid web-page
-    url = input("Please insert Web Page: ")
-    isValidPage(url)
+    PaidAccount = False
+    #url = input("Please insert Web Page: ")
+    url = "https://letterboxd.com/schaffrillas/"
+    if (isValidPage(url) == False):
+        print("\033[1;31mPlease give link such as: https://letterboxd.com/USERNAME/ \033[0m")
+        return
+    os.system('cls')
+    result = requests.get(url)
+    doc = BeautifulSoup(result.text, "html.parser")
+
+    print(f"User: \033[1;32m{getAccountName(doc)}\033[0m ({getUserName(doc)})", end='\0')
+    if (isPatron(doc) == True):
+        PaidAccount = True
+        print(" - \033[1;35mLetter Boxd Patron\033[0m")
+    elif (isPro(doc) == True):
+        PaidAccount = True
+        print(" - \033[1;35mLetter Boxd Pro\033[0m")
+    else: 
+        print(" - \033[1;35mStandard Account\033[0m")
+    
+    # Favorite Movies
+    print("\033[1;33mFavorite Movies\033[0m")
+    favoriteMovies(doc)
+
+    # Statistics:
+    print("\033[1;33mStatistics\033[0m")
+    ratingPercentages(doc)
+    
+    
     
 main()
 
@@ -234,7 +266,6 @@ print(":)")
 print("Process finished --- %s seconds ---" % (time.time() - start_time))
 
 
-        #    and url.find("https://") == -1 and url.find("/diary/") != -1 and url.find("/reviews/") != -1 and url.find("/films/") != -1 and url.find("/films/diary/") != -1):
-#https://letterboxd.com/24framesofnick/
 
 #To run Code: python main.py
+# https://letterboxd.com/schaffrillas/
