@@ -206,21 +206,35 @@ def paidFavDirectorsInfo():
 #paidFavDirectorsInfo()
 
 #to check if account is valid:
-
 def isValidPage(userLink):
-    if (url.find("letterboxd") == -1):
-        print("This is NOT a letter boxd account")
-    else:
-        print("Yes this is a letterBoxd account")
-
-    result = requests.get(userLink)
-    docTest = BeautifulSoup(tresult.text, "html.parser")
-    if (docTest.find(attrs={"class" : "error message-dark"})):
-        print("Sorry, we cannot read this page :(")
-    else:
-        print("Thank you")
+    if ((str(userLink)).find("letterboxd") == -1):
+        print("This is a not a letterboxd link")
+        print("Example: https://letterboxd.com/USERNAME/")
+        return False
+    elif ((str(userLink)).find("/films/") != -1):
+        print("This is not the homepage")
+        return False
+    try:
+        result = requests.get(userLink)
+        docTest = BeautifulSoup(result.text, "html.parser")
+        if (docTest.find(attrs={"class" : "error message-dark"})):
+            return False
+    except:
+        print("that is not a valid page")
+    return True
+    
+def main():
+    #seeing if this is a valid web-page
+    url = input("Please insert Web Page: ")
+    isValidPage(url)
+    
+main()
 
 print(":)")
 print("Process finished --- %s seconds ---" % (time.time() - start_time))
+
+
+        #    and url.find("https://") == -1 and url.find("/diary/") != -1 and url.find("/reviews/") != -1 and url.find("/films/") != -1 and url.find("/films/diary/") != -1):
+#https://letterboxd.com/24framesofnick/
 
 #To run Code: python main.py
