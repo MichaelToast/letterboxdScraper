@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 
 # Patreon Account used for testing: 
-# url = "https://letterboxd.com/schaffrillas/"
+#url = "https://letterboxd.com/schaffrillas/"
 # Pro account: 
 # url = "https://letterboxd.com/ihe/"
 # Standard Account:
@@ -129,7 +129,7 @@ def StandardFavDirectorsInfo():
     directorsDict = {}
 
     diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024
-    print(diaryURL)
+    #print(diaryURL)
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
@@ -161,15 +161,24 @@ def StandardFavDirectorsInfo():
                     directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
                 else:
                     directorsDict.update({(str(name.text.strip())) : 1})
-    print("FAVORITE DIRECTORS\n")
+    
+    # Sorting the Directors
+    sortedDirectors = sorted(directorsDict.items(), key=lambda kv: kv[1], reverse=True)
+    for director in sortedDirectors[:5]:
+        if (director[1] != 0):
+            print(f"{director[0]} - {director[1]}", end = "\0")
+            if (director[1] == 1):
+                print("- film")
+            else:
+                print("- films")
+        else:
+            print("No Films to read from")
+            break
+
     print(directorsDict)
 
     return
-#StandardFavDirectorsInfo()
-
-#contributor class
-
-
+# StandardFavDirectorsInfo()
 
 # These following function are specific for Pro/Patreon specific Functions
 def statsPage():
@@ -194,7 +203,6 @@ def paidFavDirectorsInfo():
         name = (dir.find("p", attrs={"class": "yir-secondary-heading"})).text.strip()
         filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
         print(f"{name} - {filmCount}")
-
 #paidFavDirectorsInfo()
 
 #to check if account is valid:
