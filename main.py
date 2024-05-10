@@ -46,7 +46,6 @@ def ratingPercentages():
         print("User has not rated any movies")
     return
 
-# Function works but will need another for "pro" Users
 def isPatron():
     patron = doc.findAll("span", attrs={"class": "badge -patron"})
     if (len(patron) == 0):
@@ -89,8 +88,6 @@ def StandardFavGenresInfo():
     # Setting the maximum pageCount
     if (len(lastPage) != 0):
         maxPage = int(lastPage[len(lastPage) - 1].text.strip())
-    else:
-        print("only one page to read")
     
     for i in range(1, maxPage + 1):
         subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
@@ -126,14 +123,13 @@ def StandardFavGenresInfo():
         else:
             print("No Films to read from")
             break
-
-#StandardFavGenresInfo()
-
+# StandardFavGenresInfo()
 
 def StandardFavDirectorsInfo():
     directorsDict = {}
 
-    diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024 so its equivalent to PRO page
+    diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024
+    print(diaryURL)
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
@@ -148,30 +144,30 @@ def StandardFavDirectorsInfo():
     # Setting the maximum pageCount
     if (len(lastPage) != 0):
         maxPage = int(lastPage[len(lastPage) - 1].text.strip())
-    else:
-        print("only one page to read")
-    
     for i in range(1, maxPage + 1):
         subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
         resultSubPage = requests.get(subDiaryUrl)
         subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
         movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
-        for film in movieList:        
+        for film in movieList:   
             moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
             #now have to get the directors
-            directorNames = moviePage.find("section", attrs={"id": "featured-film-header"}).findAll(href=True)
-            for name in directorNames[1:]:
+            directorNames = moviePage.findAll("a", attrs={"class":"contributor"})
+            for name in directorNames:
                 # updating the dictionary
                 if (directorsDict.get(str(name.text.strip())) != None):
                     directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
                 else:
                     directorsDict.update({(str(name.text.strip())) : 1})
+    print("FAVORITE DIRECTORS\n")
+    print(directorsDict)
 
     return
-# StandardFavDirectorsInfo()
+#StandardFavDirectorsInfo()
 
+#contributor class
 
 
 
@@ -199,16 +195,17 @@ def paidFavDirectorsInfo():
         filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
         print(f"{name} - {filmCount}")
 
+#paidFavDirectorsInfo()
+
+#to check if account is valid:
+testUrl = "https://letterboxd.com/24framesofnik/"
+tresult = requests.get(url)
+docTest = BeautifulSoup(tresult.text, "html.parser")
+
+if (docTest.find(attrs={"class" : "error message-dark"})):
+    print("there is no page")
 
 print(":)")
 print("Process finished --- %s seconds ---" % (time.time() - start_time))
 
-
 #To run Code: python main.py
-'''
-TO DO LIST:
-    - Check to see if a not found page
-    - Find most watched movie
-    - Film Type Percentage - top scores (letter box top 100, IMB top, oscars)
-    - Favorite decade
-'''
