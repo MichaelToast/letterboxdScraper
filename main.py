@@ -206,12 +206,19 @@ def paidFavDirectorsInfo():
 #paidFavDirectorsInfo()
 
 #to check if account is valid:
-testUrl = "https://letterboxd.com/24framesofnik/"
-tresult = requests.get(url)
-docTest = BeautifulSoup(tresult.text, "html.parser")
 
-if (docTest.find(attrs={"class" : "error message-dark"})):
-    print("there is no page")
+def isValidPage(userLink):
+    if (url.find("letterboxd") == -1):
+        print("This is NOT a letter boxd account")
+    else:
+        print("Yes this is a letterBoxd account")
+
+    result = requests.get(userLink)
+    docTest = BeautifulSoup(tresult.text, "html.parser")
+    if (docTest.find(attrs={"class" : "error message-dark"})):
+        print("Sorry, we cannot read this page :(")
+    else:
+        print("Thank you")
 
 print(":)")
 print("Process finished --- %s seconds ---" % (time.time() - start_time))
