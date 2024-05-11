@@ -1,2 +1,2 @@
 # My First Web Scraping Project
-This is my first major attempt of a python webscrapping project. The project will take a letterboxd account and return data from its user. 
+This is my first major attempt of a python webscrapping project. Project takes a link to a letterboxd account (ex: https://letterboxd.com/USER/) and scrape data from its user, displaying it to the terminal.
