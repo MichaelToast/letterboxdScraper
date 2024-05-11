@@ -203,7 +203,7 @@ def isValidPage(userLink):
     return True
     
 def main():
-    #seeing if this is a valid web-page
+    # Seeing if this is a valid web-page
     PaidAccount = False
     url = input("Please insert Web Page: ")
     if (isValidPage(url) == False):
@@ -238,7 +238,7 @@ def main():
     else:
         StandardFavGenresInfo(doc)
     
-    #Favorite Directors
+    # Favorite Directors
     print("\033[1;33mFavorite Directors\033[0m")
     if (PaidAccount):
         paidFavDirectorsInfo(doc)
