@@ -5,50 +5,34 @@ import os
 from bs4 import BeautifulSoup
 import requests
 
-# Patreon Account used for testing: 
-#url = "https://letterboxd.com/schaffrillas/"
-# Pro account: 
-# url = "https://letterboxd.com/ihe/"
-# Standard Account:
-'''
-url = "https://letterboxd.com/24framesofnick/"
-result = requests.get(url)
-doc = BeautifulSoup(result.text, "html.parser")
-'''
-
-
 def favoriteMovies(doc):
     favoriteList = doc.findAll("li", attrs={"class": "poster-container favourite-film-poster-container"})
     for name in favoriteList:
         tag = name.find('img')
         print(f"\t\033[1;36m{tag['alt']}\033[0m")
-        #\t\033[1;35m{tag['alt']}\033[0m
     if (len(favoriteList) == 0):
-        print("\033[1;91mUser does not list favorite movies\033[0m")
+        print("\t\033[1;91mUser does not list favorite movies\033[0m")
 
-# Helper Function to ratingPercentages
 def extractRatingCount(word):
-    res = [int(i) for i in (str(word)).split() if i.isdigit()]
+    res = [int(i) for i in (str(word)).split() if (i.isdigit())]
     return (res)
 
-# Helper Function to ratingPercentages
 def extractRatingPercentage(word):
     res = str(word).split()
     length = len(res)
     return res[length - 1]
 
-# Rating Percentage
 numberRatings = []
 numberPercentages = []
 def ratingPercentages(doc):
     ratings = doc.findAll("li", attrs={"class": "rating-histogram-bar"})
     for rating in ratings:
         section = (rating.text.strip() )
-        print(section)
+        print(f"\t\033[1;32m{section}\033[0m")
         numberRatings.append(extractRatingCount(section))
         numberPercentages.append(extractRatingPercentage(section))
-    if (len(rating) == 0):
-        print("User has not rated any movies")
+    if (len(ratings) == 0):
+        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
     return
 
 def isPatron(doc):
@@ -73,12 +57,13 @@ def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
-def StandardFavGenresInfo():
+def StandardFavGenresInfo(doc):
     genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
 
-    diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024 so its equivalent to PRO page
+    # Acessing thr 2024 diary page so data is equivalent to the the Paid for "Stats" page
+    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024"
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
@@ -86,7 +71,7 @@ def StandardFavGenresInfo():
     errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
 
     if (errorMessage != -1):
-        print("Users has not reviewed any movies")
+        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
         return
 
     maxPage = 1
@@ -103,7 +88,6 @@ def StandardFavGenresInfo():
             moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
-
             # Now reading the genres
             genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
             if (genreBlock == None):
@@ -120,20 +104,16 @@ def StandardFavGenresInfo():
     sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
     for genre in sortedGenres[:10]:
         if (genre[1] != 0):
-            print(f"{genre[0]} - {genre[1]}", end = "\0")
+            print(f"\t\033[1;34m{genre[0]}\033[0m - \033[1;36m{genre[1]}\033[0m", end = "\0")
             if (genre[1] == 1):
-                print(" film")
+                print(" \033[1;36mfilm\033[0m")
             else:
-                print(" films")
-        else:
-            print("No Films to read from")
-            break
-# StandardFavGenresInfo()
+                print(" \033[1;36mfilms\033[0m")
 
-def StandardFavDirectorsInfo():
+def StandardFavDirectorsInfo(doc):
     directorsDict = {}
 
-    diaryURL = "https://letterboxd.com/" + getUserName() + "/films/diary/for/2024" #2024
+    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024" #2024
     #print(diaryURL)
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
@@ -142,7 +122,7 @@ def StandardFavDirectorsInfo():
     errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
 
     if (errorMessage != -1):
-        print("Users has not reviewed any movies")
+        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
         return
 
     maxPage = 1
@@ -171,46 +151,40 @@ def StandardFavDirectorsInfo():
     sortedDirectors = sorted(directorsDict.items(), key=lambda kv: kv[1], reverse=True)
     for director in sortedDirectors[:5]:
         if (director[1] != 0):
-            print(f"{director[0]} - {director[1]}", end = "\0")
+            print(f"\t\033[1;31m{director[0]}\033[0m - \033[1;91m{director[1]}\033[0m", end = "\0")
             if (director[1] == 1):
-                print("- film")
+                print(" - \033[1;91mfilm\033[0m")
             else:
-                print("- films")
+                print(" - \033[1;91mfilms\033[0m")
         else:
             print("No Films to read from")
             break
-
-    print(directorsDict)
-
     return
-# StandardFavDirectorsInfo()
 
 # These following function are specific for Pro/Patreon specific Functions
-def statsPage():
+def statsPage(doc):
     # Opening the Data Page for pro and patron users
-    infoUrl = "https://letterboxd.com/" + str(getAccountName()) + "/year/2024/"
+    infoUrl = "https://letterboxd.com/" + str(getAccountName(doc)) + "/year/2024/"
     resultTwo = requests.get(infoUrl)
     docTwo = BeautifulSoup(resultTwo.text, "html.parser")
     return docTwo
 
-def paidFavGenresInfo():
-    docTwo = statsPage()
+def paidFavGenresInfo(doc):
+    docTwo = statsPage(doc)
     favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
     for fav in (favoriteGenres[0]).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
         title = fav.find("a", attrs={"class": "film-breakdown-graph-bar-label"})
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
-        print(f"{title.text.strip()} - {info.text.strip()}")
-
-def paidFavDirectorsInfo():
-    docTwo = statsPage()
+        print(f"\t\033[1;34m{title.text.strip()}\033[0m - \033[1;36m{info.text.strip()}\033[0m")
+        
+def paidFavDirectorsInfo(doc):
+    docTwo = statsPage(doc)
     favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
     for dir in (favoriteDirectors[0]).findAll("div", attrs={"class":"yir-person-list-data"}):
         name = (dir.find("p", attrs={"class": "yir-secondary-heading"})).text.strip()
         filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
-        print(f"{name} - {filmCount}")
-#paidFavDirectorsInfo()
+        print(f"\t\033[1;31m{name}\033[0m - \033[1;91m{filmCount}\033[0m")
 
-#to check if account is valid:
 def isValidPage(userLink):
     if ((str(userLink)).find("letterboxd") == -1):
         print("This is a not a letterboxd link")
@@ -231,8 +205,7 @@ def isValidPage(userLink):
 def main():
     #seeing if this is a valid web-page
     PaidAccount = False
-    #url = input("Please insert Web Page: ")
-    url = "https://letterboxd.com/schaffrillas/"
+    url = input("Please insert Web Page: ")
     if (isValidPage(url) == False):
         print("\033[1;31mPlease give link such as: https://letterboxd.com/USERNAME/ \033[0m")
         return
@@ -254,18 +227,26 @@ def main():
     print("\033[1;33mFavorite Movies\033[0m")
     favoriteMovies(doc)
 
-    # Statistics:
+    # Rating Statistics:
     print("\033[1;33mStatistics\033[0m")
     ratingPercentages(doc)
+
+    # Favorite Movie Genres
+    print("\033[1;33mFavorite Genres\033[0m")
+    if (PaidAccount):
+        paidFavGenresInfo(doc)
+    else:
+        StandardFavGenresInfo(doc)
     
+    #Favorite Directors
+    print("\033[1;33mFavorite Directors\033[0m")
+    if (PaidAccount):
+        paidFavDirectorsInfo(doc)
+    else:
+        StandardFavDirectorsInfo(doc)
     
-    
+
 main()
 
-print(":)")
-print("Process finished --- %s seconds ---" % (time.time() - start_time))
-
-
-
+print("\033[1;32mThank You :)\033[0m")
 #To run Code: python main.py
-# https://letterboxd.com/schaffrillas/
