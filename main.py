@@ -153,9 +153,9 @@ def StandardFavDirectorsInfo(doc):
         if (director[1] != 0):
             print(f"\t\033[1;31m{director[0]}\033[0m - \033[1;91m{director[1]}\033[0m", end = "\0")
             if (director[1] == 1):
-                print(" - \033[1;91mfilm\033[0m")
+                print(" \033[1;91mfilm\033[0m")
             else:
-                print(" - \033[1;91mfilms\033[0m")
+                print(" \033[1;91mfilms\033[0m")
         else:
             print("No Films to read from")
             break
