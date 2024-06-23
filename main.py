@@ -1,5 +1,3 @@
-# Starting a new attempt to fix the code
-# attempt
 import time
 start_time = time.time()
 import os
@@ -58,6 +56,100 @@ def getUserName(doc):
 def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
+
+
+def __diaryReadThrough__(pageFunction, returnDict, doc):
+    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024"
+    resultDiary = requests.get(diaryURL)
+    diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
+
+    lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
+    errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
+
+    if (errorMessage != -1):
+        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
+        return
+
+    maxPage = 1
+    # Setting the maximum pageCount
+    if (len(lastPage) != 0):
+        maxPage = int(lastPage[len(lastPage) - 1].text.strip())
+    
+    for i in range(1, maxPage + 1):
+        subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
+        resultSubPage = requests.get(subDiaryUrl)
+        subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
+        movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
+        for film in movieList:        
+            moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
+            resultmoviePage = requests.get(moviepageURL)
+            moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+            # Now doing the thing
+            pageFunction(moviePage)
+    return returnDict
+
+# Page Functions
+def __getDirector__(moviePage, directorsDict):
+    directorNames = moviePage.findAll("a", attrs={"class":"contributor"})
+    for name in directorNames:
+        # updating the dictionary
+        if (directorsDict.get(str(name.text.strip())) != None):
+            directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
+        else:
+            directorsDict.update({(str(name.text.strip())) : 1})        
+
+def __getGenre__(moviePage, genreDict):
+    # Now reading the genres
+    genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
+    if (genreBlock == None):
+        print("no genres for this movie")
+        # Film does not have any genres or themes to pull from
+    genreNames = (genreBlock.findAll("a", href=True))
+    # Updating the dictionary, if there are no genres/themes, nothing will be added
+    for genre in genreNames:
+        name = str(genre.text.strip())
+        if (genreDict.get(str(name)) != None):
+            genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
+
+
+
+
+def StandardFavDirectorsInfo(doc):
+    directorsDict = {}
+
+    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024" #2024
+    #print(diaryURL)
+    resultDiary = requests.get(diaryURL)
+    diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
+
+    lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
+    errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
+
+    if (errorMessage != -1):
+        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
+        return
+
+    maxPage = 1
+    # Setting the maximum pageCount
+    if (len(lastPage) != 0):
+        maxPage = int(lastPage[len(lastPage) - 1].text.strip())
+    for i in range(1, maxPage + 1):
+        subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
+        resultSubPage = requests.get(subDiaryUrl)
+        subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
+        movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
+        for film in movieList:   
+            moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
+            resultmoviePage = requests.get(moviepageURL)
+            moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+            #now have to get the directors
+            directorNames = moviePage.findAll("a", attrs={"class":"contributor"})
+            for name in directorNames:
+                # updating the dictionary
+                if (directorsDict.get(str(name.text.strip())) != None):
+                    directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
+                else:
+                    directorsDict.update({(str(name.text.strip())) : 1})
 
 def StandardFavGenresInfo(doc):
     genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
