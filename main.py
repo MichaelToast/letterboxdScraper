@@ -85,7 +85,7 @@ def __diaryReadThrough__(pageFunction, returnDict, doc):
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
             # Now doing the thing
-            pageFunction(moviePage)
+            pageFunction(moviePage, returnDict)
     return returnDict
 
 # Page Functions
@@ -110,6 +110,30 @@ def __getGenre__(moviePage, genreDict):
         name = str(genre.text.strip())
         if (genreDict.get(str(name)) != None):
             genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
+
+def NEWStandardFavGenresInfo(doc):
+    genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
+             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
+               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
+    __diaryReadThrough__(__getGenre__, genreDict, doc)
+    #sorting the list
+    sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
+    for genre in sortedGenres[:10]:
+        if (genre[1] != 0):
+            print(f"\t\033[1;34m{genre[0]}\033[0m - \033[1;36m{genre[1]}\033[0m", end = "\0")
+            if (genre[1] == 1):
+                print(" \033[1;36mfilm\033[0m")
+            else:
+                print(" \033[1;36mfilms\033[0m")
+
+
+
+
+def NEWGenreFunction(PaidAccount, doc):
+    if PaidAccount == True: 
+        paidFavGenresInfo(doc)
+    else:
+        NEWStandardFavGenresInfo(doc)
 
 
 
@@ -297,7 +321,16 @@ def isValidPage(userLink):
     return True
     
 def main():
-    # Seeing if this is a valid web-page
+    print("NEW GENRE FUNCTION")
+    url = "https://letterboxd.com/codythebridge/"
+    result = requests.get(url)
+    doc = BeautifulSoup(result.text, "html.parser")
+
+    #StandardFavGenresInfo(doc)
+    NEWGenreFunction(False, doc)
+
+    '''
+        # Seeing if this is a valid web-page
     PaidAccount = False
     url = input("Please insert Web Page: ")
     if (isValidPage(url) == False):
@@ -338,6 +371,8 @@ def main():
         paidFavDirectorsInfo(doc)
     else:
         StandardFavDirectorsInfo(doc)
+    '''
+
     
 
 main()
