@@ -57,7 +57,6 @@ def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
-
 def __diaryReadThrough__(pageFunction, returnDict, doc):
     diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024"
     resultDiary = requests.get(diaryURL)
@@ -111,7 +110,8 @@ def __getGenre__(moviePage, genreDict):
         if (genreDict.get(str(name)) != None):
             genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
 
-def NEWStandardFavGenresInfo(doc):
+def __standardGenreInfo__(doc):
+    genreList = []
     genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
                "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
@@ -120,22 +120,20 @@ def NEWStandardFavGenresInfo(doc):
     sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
     for genre in sortedGenres[:10]:
         if (genre[1] != 0):
-            print(f"\t\033[1;34m{genre[0]}\033[0m - \033[1;36m{genre[1]}\033[0m", end = "\0")
-            if (genre[1] == 1):
-                print(" \033[1;36mfilm\033[0m")
-            else:
-                print(" \033[1;36mfilms\033[0m")
+            genreList.append(genre[0] + " - " + str(genre[1]) + " " + ("film" if (genre[1] == 1) else "films" ))
+    return genreList
 
 
-
-
-def NEWGenreFunction(PaidAccount, doc):
+def genreFunction(PaidAccount, doc):
+    genreList = []
     if PaidAccount == True: 
-        paidFavGenresInfo(doc)
+        genreList = __paidFavGenresInfo__(doc)
     else:
-        NEWStandardFavGenresInfo(doc)
-
-
+        genreList = __standardGenreInfo__(doc)
+    
+    # Displaying the top 10 Genres
+    for genre in genreList[:10]:
+        print(f" \033[1;36m{genre}\033[0m")
 
 
 def StandardFavDirectorsInfo(doc):
@@ -287,13 +285,15 @@ def statsPage(doc):
     docTwo = BeautifulSoup(resultTwo.text, "html.parser")
     return docTwo
 
-def paidFavGenresInfo(doc):
+def __paidFavGenresInfo__(doc):
+    genreList = []
     docTwo = statsPage(doc)
     favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
     for fav in (favoriteGenres[0]).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
         title = fav.find("a", attrs={"class": "film-breakdown-graph-bar-label"})
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
-        print(f"\t\033[1;34m{title.text.strip()}\033[0m - \033[1;36m{info.text.strip()}\033[0m")
+        genreList.append(title.text.strip() + " - " + info.text.strip())
+    return genreList
         
 def paidFavDirectorsInfo(doc):
     docTwo = statsPage(doc)
@@ -321,16 +321,7 @@ def isValidPage(userLink):
     return True
     
 def main():
-    print("NEW GENRE FUNCTION")
-    url = "https://letterboxd.com/codythebridge/"
-    result = requests.get(url)
-    doc = BeautifulSoup(result.text, "html.parser")
-
-    #StandardFavGenresInfo(doc)
-    NEWGenreFunction(False, doc)
-
-    '''
-        # Seeing if this is a valid web-page
+    # Seeing if this is a valid web-page
     PaidAccount = False
     url = input("Please insert Web Page: ")
     if (isValidPage(url) == False):
@@ -350,28 +341,10 @@ def main():
     else: 
         print(" - \033[1;35mStandard Account\033[0m")
     
-    # Favorite Movies
-    print("\033[1;33mFavorite Movies\033[0m")
-    favoriteMovies(doc)
-
-    # Rating Statistics:
-    print("\033[1;33mStatistics\033[0m")
-    ratingPercentages(doc)
-
-    # Favorite Movie Genres
-    print("\033[1;33mFavorite Genres\033[0m")
-    if (PaidAccount):
-        paidFavGenresInfo(doc)
-    else:
-        StandardFavGenresInfo(doc)
+    print("GENRES")
+    genreFunction(PaidAccount, doc)    
     
-    # Favorite Directors
-    print("\033[1;33mFavorite Directors\033[0m")
-    if (PaidAccount):
-        paidFavDirectorsInfo(doc)
-    else:
-        StandardFavDirectorsInfo(doc)
-    '''
+
 
     
 
