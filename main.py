@@ -123,11 +123,10 @@ def __standardGenreInfo__(doc):
             genreList.append(genre[0] + " - " + str(genre[1]) + " " + ("film" if (genre[1] == 1) else "films" ))
     return genreList
 
-
 def genreFunction(PaidAccount, doc):
     genreList = []
     if PaidAccount == True: 
-        genreList = __paidFavGenresInfo__(doc)
+        genreList = __paidGenresInfo__(doc)
     else:
         genreList = __standardGenreInfo__(doc)
     
@@ -135,98 +134,28 @@ def genreFunction(PaidAccount, doc):
     for genre in genreList[:10]:
         print(f" \033[1;36m{genre}\033[0m")
 
-
-def StandardFavDirectorsInfo(doc):
+def __standardDirectorsInfo__(doc):
+    directorsList = []
     directorsDict = {}
+    __diaryReadThrough__(__getDirector__, directorsDict, doc)
+    #sorting the list
+    sortedDirectors = sorted(directorsDict.items(), key=lambda kv: kv[1], reverse=True)
+    for director in sortedDirectors[:5]:
+        directorsList.append(director[0] + " - " + str(director[1]) + " " + ("film" if (director[1] == 1) else "films" ))
+    return directorsList
 
-    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024" #2024
-    #print(diaryURL)
-    resultDiary = requests.get(diaryURL)
-    diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
-
-    lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
-    errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
-
-    if (errorMessage != -1):
-        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
-        return
-
-    maxPage = 1
-    # Setting the maximum pageCount
-    if (len(lastPage) != 0):
-        maxPage = int(lastPage[len(lastPage) - 1].text.strip())
-    for i in range(1, maxPage + 1):
-        subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
-        resultSubPage = requests.get(subDiaryUrl)
-        subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
-        movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
-        for film in movieList:   
-            moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
-            resultmoviePage = requests.get(moviepageURL)
-            moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
-            #now have to get the directors
-            directorNames = moviePage.findAll("a", attrs={"class":"contributor"})
-            for name in directorNames:
-                # updating the dictionary
-                if (directorsDict.get(str(name.text.strip())) != None):
-                    directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
-                else:
-                    directorsDict.update({(str(name.text.strip())) : 1})
-
-def StandardFavGenresInfo(doc):
-    genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
-             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
-               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
-
-    # Acessing thr 2024 diary page so data is equivalent to the the Paid for "Stats" page
-    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024"
-    resultDiary = requests.get(diaryURL)
-    diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
-
-    lastPage = diaryPage.findAll("li", attrs={"class":"paginate-page"})
-    errorMessage = (diaryPage.find("p", attrs={"class": "ui-block-heading"}).text.strip()).find("logged any")
-
-    if (errorMessage != -1):
-        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
-        return
-
-    maxPage = 1
-    # Setting the maximum pageCount
-    if (len(lastPage) != 0):
-        maxPage = int(lastPage[len(lastPage) - 1].text.strip())
+def directorsFunction(PaidAccount, doc):
+    directorsList = []
+    if PaidAccount == True: 
+        directorsList = __paidDirectorsInfo__(doc)
+    else:
+        directorsList = __standardDirectorsInfo__(doc)
     
-    for i in range(1, maxPage + 1):
-        subDiaryUrl = diaryURL + "/page/" + str(i) + "/"
-        resultSubPage = requests.get(subDiaryUrl)
-        subDiary = BeautifulSoup(resultSubPage.text, "html.parser")
-        movieList = subDiary.findAll("div", attrs={"data-film-slug": True})
-        for film in movieList:        
-            moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
-            resultmoviePage = requests.get(moviepageURL)
-            moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
-            # Now reading the genres
-            genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
-            if (genreBlock == None):
-                # Film does not have any genres or themes to pull from
-                continue
-            genreNames = (genreBlock.findAll("a", href=True))
-            # Updating the dictionary, if there are no genres/themes, nothing will be added
-            for genre in genreNames:
-                name = str(genre.text.strip())
-                if (genreDict.get(str(name)) != None):
-                    genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
+    # Displaying the top Directors
+    for director in directorsList[:10]:
+        print(f" \033[1;36m{director}\033[0m")
 
-    # Displaying the new Genres we collected
-    sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
-    for genre in sortedGenres[:10]:
-        if (genre[1] != 0):
-            print(f"\t\033[1;34m{genre[0]}\033[0m - \033[1;36m{genre[1]}\033[0m", end = "\0")
-            if (genre[1] == 1):
-                print(" \033[1;36mfilm\033[0m")
-            else:
-                print(" \033[1;36mfilms\033[0m")
-
-def StandardFavDirectorsInfo(doc):
+def OLDStandardFavDirectorsInfo(doc):
     directorsDict = {}
 
     diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024" #2024
@@ -285,7 +214,7 @@ def statsPage(doc):
     docTwo = BeautifulSoup(resultTwo.text, "html.parser")
     return docTwo
 
-def __paidFavGenresInfo__(doc):
+def __paidGenresInfo__(doc):
     genreList = []
     docTwo = statsPage(doc)
     favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
@@ -295,13 +224,15 @@ def __paidFavGenresInfo__(doc):
         genreList.append(title.text.strip() + " - " + info.text.strip())
     return genreList
         
-def paidFavDirectorsInfo(doc):
+def __paidDirectorsInfo__(doc):
+    directorsList = []
     docTwo = statsPage(doc)
     favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
     for dir in (favoriteDirectors[0]).findAll("div", attrs={"class":"yir-person-list-data"}):
         name = (dir.find("p", attrs={"class": "yir-secondary-heading"})).text.strip()
         filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
-        print(f"\t\033[1;31m{name}\033[0m - \033[1;91m{filmCount}\033[0m")
+        directorsList.append(name + str(filmCount))
+    return directorsList
 
 def isValidPage(userLink):
     if ((str(userLink)).find("letterboxd") == -1):
@@ -343,6 +274,7 @@ def main():
     
     print("GENRES")
     genreFunction(PaidAccount, doc)    
+
     
 
 
