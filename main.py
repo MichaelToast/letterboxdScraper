@@ -58,7 +58,7 @@ def getAccountName(doc):
     return (accountName["title"])
 
 def __diaryReadThrough__(pageFunction, returnDict, doc):
-    diaryURL = "https://letterboxd.com/" + getUserName(doc) + "/films/diary/for/2024"
+    diaryURL = "https://letterboxd.com/" + getAccountName(doc) + "/films/diary/for/2024"
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
 
@@ -171,7 +171,7 @@ def genreFunction(PaidAccount, doc):
     
     # Displaying the top 10 Genres
     for genre in genreList[:10]:
-        print(f" \033[1;36m{genre}\033[0m")
+        print(f"\t\033[1;36m{genre}\033[0m")
 
 def directorsFunction(PaidAccount, doc):
     directorsList = []
@@ -182,7 +182,7 @@ def directorsFunction(PaidAccount, doc):
     
     # Displaying the top Directors
     for director in directorsList[:10]:
-        print(f" \033[1;91m{director}\033[0m")
+        print(f"\t\033[1;91m{director}\033[0m")
 
 def isValidPage(userLink):
     if ((str(userLink)).find("letterboxd") == -1):
