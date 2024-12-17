@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATA</title>
+</head>
+<body style="background-color: #14181C; color: white">
+    <h1>HELLO THERE</h1>
+    <!--Flask uses Jinja for parameters-->
+    <h1>USER: {{ posts.username }}</h1>
+    <h2>USER: {{ posts.pageLink }}</h2>
+    <p>TYPE: {{ posts.accountType }}</p>
+    <p># OF RATINGS: {{ posts.ratings }}</p>
+    
+    {% if posts.ratings > 5 %}
+        <p>Looser</p>
+    {% else %}
+        <p>Functional Human</p>
+    {% endif %}
+    
+
+
+    
+</body>
+</html>
