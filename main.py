@@ -237,7 +237,7 @@ def main():
 
     
 
-# main()
+main()
 
 print("\033[1;32mThank You :)\033[0m")
 #To run Code: python main.py

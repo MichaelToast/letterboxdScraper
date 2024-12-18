@@ -6,18 +6,34 @@
     <title>DATA</title>
 </head>
 <body style="background-color: #14181C; color: white">
-    <h1>HELLO THERE</h1>
+    <h1>USER DATA</h1>
     <!--Flask uses Jinja for parameters-->
-    <h1>USER: {{ posts.username }}</h1>
-    <h2>USER: {{ posts.pageLink }}</h2>
+    <h1>USER: {{ posts.name.accountName }}</h1>
+    <h2>USER: {{ posts.name.userName }}</h2>
     <p>TYPE: {{ posts.accountType }}</p>
-    <p># OF RATINGS: {{ posts.ratings }}</p>
+    <h3>RATINGS:</h3>
+    {% for rating in posts.ratingStats %}
+        <p> {{ rating }} </p>
+    {% endfor %}
     
-    {% if posts.ratings > 5 %}
-        <p>Looser</p>
-    {% else %}
-        <p>Functional Human</p>
-    {% endif %}
+    <h3>FAVORITE MOVIES:</h3>
+    {% for movie in posts.favMovies %}
+        <p> {{ movie }} </p>
+    {% endfor %}
+
+    <!-- This line is completely wrong. Need to access the sub dir -->
+    
+    <h3>FAVORITE GENRES:</h3>
+    <ul>
+        {% for genre, value in genres %}
+            <li>{{ genre }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>FAVORITE DIRECTORS:</h3>
+    {% for dir in posts.favDir %}
+        <p> {{ dir }} </p>
+    {% endfor %}
     
 
 
