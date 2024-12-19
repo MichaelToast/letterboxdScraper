@@ -5,35 +5,43 @@ import os
 from bs4 import BeautifulSoup
 import requests
 
-def favoriteMovies(doc):
+def favoriteMovies(doc, userData):
     favoriteList = doc.findAll("li", attrs={"class": "poster-container favourite-film-poster-container"})
     for name in favoriteList:
         tag = name.find('img')
-        print(f"\t\033[1;36m{tag['alt']}\033[0m")
+        userData['favMovies'].append(tag['alt'])
     if (len(favoriteList) == 0):
-        print("\t\033[1;91mUser does not list favorite movies\033[0m")
+        # User does not list favorite movies
+        return
+    return
 
-def extractRatingCount(word):
+def __extractRatingCount__(word):
     res = [int(i) for i in (str(word)).split() if (i.isdigit())]
     return (res)
 
-def extractRatingPercentage(word):
+def __extractRatingPercentage__(word):
     res = str(word).split()
     length = len(res)
     return res[length - 1]
 
-numberRatings = []
-numberPercentages = []
-def ratingPercentages(doc):
+numberRatings = [] # [2]
+numberPercentages = [] # (1%)
+ratingData = []
+def ratingPercentages(doc, userData):
     ratings = doc.findAll("li", attrs={"class": "rating-histogram-bar"})
     for rating in ratings:
         section = (rating.text.strip() )
-        print(f"\t\033[1;32m{section}\033[0m")
-        numberRatings.append(extractRatingCount(section))
-        numberPercentages.append(extractRatingPercentage(section))
+        ratingData.append(section)
+            # Lists are made incase they are need seprate for the graphic 
+        #numberRatings.append(__extractRatingCount__(section))
+        #numberPercentages.append(__extractRatingPercentage__(section))
     if (len(ratings) == 0):
-        print("\t\033[1;31mUser Has Not Rated Any Movies For 2024\033[0m")
+        return # User Has not rated any movies.
+    userData["ratingStats"] = ratingData
+
     return
+
+# Determining Account Details:
 
 def isPatron(doc):
     patron = doc.findAll("span", attrs={"class": "badge -patron"})
@@ -57,7 +65,8 @@ def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
 
-def __diaryReadThrough__(pageFunction, returnDict, doc):
+# Collecting Genres and Directors
+def __diaryReadThrough__(doc, userData):
     diaryURL = "https://letterboxd.com/" + getAccountName(doc) + "/films/diary/for/2024"
     resultDiary = requests.get(diaryURL)
     diaryPage = BeautifulSoup(resultDiary.text, "html.parser")
@@ -83,161 +92,170 @@ def __diaryReadThrough__(pageFunction, returnDict, doc):
             moviepageURL = "https://letterboxd.com/film/" + str(film["data-film-slug"]) + "/genres/"
             resultmoviePage = requests.get(moviepageURL)
             moviePage = BeautifulSoup(resultmoviePage.text, "html.parser")
+
             # Now collecting the wanted info from the page
-            pageFunction(moviePage, returnDict)
-    return returnDict
+            __getDirector__(moviePage, userData)
+            __getGenre__(moviePage, userData)
+        
+    return
 
 # Movie Page Functions
-def __getDirector__(moviePage, directorsDict):
+def __getDirector__(moviePage, userData):
     directorNames = moviePage.findAll("a", attrs={"class":"contributor"})
     for name in directorNames:
         # Updating The Dictionary
-        if (directorsDict.get(str(name.text.strip())) != None):
-            directorsDict.update({(str(name.text.strip())) : (directorsDict.get(str(name.text.strip())) + 1)})
+        if (userData['favDirectors'].get(str(name.text.strip())) != None):
+            userData['favDirectors'].update({(str(name.text.strip())) : (userData['favDirectors'].get(str(name.text.strip())) + 1)})
         else:
-            directorsDict.update({(str(name.text.strip())) : 1})        
+            userData['favDirectors'].update({(str(name.text.strip())) : 1})        
 
-def __getGenre__(moviePage, genreDict):
+def __getGenre__(moviePage, userData):
     genreBlock = moviePage.find("div", attrs={"class":"text-sluglist capitalize"})
     if (genreBlock == None):
         print("no genres for this movie")
         # Film does not have any genres or themes to pull from
     genreNames = (genreBlock.findAll("a", href=True))
+
     # Updating the dictionary, if there are no genres/themes, nothing will be added
     for genre in genreNames:
         name = str(genre.text.strip())
-        if (genreDict.get(str(name)) != None):
-            genreDict.update({str(name) : (genreDict.get(str(name))) + 1})
+        if (userData['favGenres'].get(str(name)) != None):
+            userData['favGenres'].update({str(name) : (userData['favGenres'].get(str(name))) + 1})
 
-# Standard Collection Functions
-def __standardGenreInfo__(doc):
-    genreList = []
-    genreDict = {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
-             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
-               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
-    __diaryReadThrough__(__getGenre__, genreDict, doc)
-    # Sorting the list
-    sortedGenres = sorted(genreDict.items(), key=lambda kv: kv[1], reverse=True)
-    for genre in sortedGenres[:10]:
-        if (genre[1] != 0):
-            genreList.append(genre[0] + " - " + str(genre[1]) + " " + ("film" if (genre[1] == 1) else "films" ))
-    return genreList
-
-def __standardDirectorsInfo__(doc):
-    directorsList = []
-    directorsDict = {}
-    __diaryReadThrough__(__getDirector__, directorsDict, doc)
-    # Sorting the list
-    sortedDirectors = sorted(directorsDict.items(), key=lambda kv: kv[1], reverse=True)
-    for director in sortedDirectors[:5]:
-        directorsList.append(director[0] + " - " + str(director[1]) + " " + ("film" if (director[1] == 1) else "films" ))
-    return directorsList
-
-# Paid Collection Functions
-def statsPage(doc):
+# Paid Collection Functions:
+def statsPage(doc, userData):
     # Opening the Data Page for pro and patron users
-    infoUrl = "https://letterboxd.com/" + str(getAccountName(doc)) + "/year/2024/"
+    infoUrl = "https://letterboxd.com/" + userData['name']['accountName'] + "/year/2024/"
     resultTwo = requests.get(infoUrl)
     docTwo = BeautifulSoup(resultTwo.text, "html.parser")
     return docTwo
 
-def __paidGenresInfo__(doc):
+def __paidGenresInfo__(doc, userData):
     genreList = []
-    docTwo = statsPage(doc)
-    favoriteGenres = docTwo.findAll("section", attrs={"class": "yir-genres"}) 
-    for fav in (favoriteGenres[0]).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
+    docTwo = statsPage(doc, userData)
+    favoriteGenres = docTwo.find("section", attrs={"class": "yir-genres"}) 
+    if (favoriteGenres == 0 or not(favoriteGenres)):
+        print("NO GENRES???????????????????????")
+         
+    for fav in (favoriteGenres).findAll("div", attrs={"class": "film-breakdown-graph-bar"}):
         title = fav.find("a", attrs={"class": "film-breakdown-graph-bar-label"})
         info = fav.find("div", attrs={"class": "film-breakdown-graph-bar-value"})
         genreList.append(title.text.strip() + " - " + info.text.strip())
-    return genreList
+    userData['favGenres'] = genreList
+    return
         
-def __paidDirectorsInfo__(doc):
+def __paidDirectorsInfo__(doc, userData):
     directorsList = []
-    docTwo = statsPage(doc)
+    docTwo = statsPage(doc, userData)
     favoriteDirectors = docTwo.findAll("section", attrs={"id": "directors-most-watched"})
     for dir in (favoriteDirectors[0]).findAll("div", attrs={"class":"yir-person-list-data"}):
         name = (dir.find("p", attrs={"class": "yir-secondary-heading"})).text.strip()
         filmCount = (dir.find("p", attrs={"class": "yir-label –center -detail"})).text.strip()
         directorsList.append(name + str(filmCount))
-    return directorsList
+    userData['favDirectors'] = directorsList
+    return
 
-# Data Display Function
-def genreFunction(PaidAccount, doc):
-    genreList = []
-    if PaidAccount == True: 
-        genreList = __paidGenresInfo__(doc)
-    else:
-        genreList = __standardGenreInfo__(doc)
-    
-    # Displaying the top 10 Genres
-    for genre in genreList[:10]:
-        print(f"\t\033[1;36m{genre}\033[0m")
+# General Data Collection Functions:
 
-def directorsFunction(PaidAccount, doc):
-    directorsList = []
-    if PaidAccount == True: 
-        directorsList = __paidDirectorsInfo__(doc)
+def pageData(PaidAccount, doc, userData):
+    #technically I dont think this needs to be passed the doc, given that they each just use the account name
+    if (PaidAccount):
+        # Need to open up the stats page
+        __paidGenresInfo__(doc, userData)
+        __paidDirectorsInfo__(doc, userData)
     else:
-        directorsList = __standardDirectorsInfo__(doc)
-    
-    # Displaying the top Directors
-    for director in directorsList[:10]:
-        print(f"\t\033[1;91m{director}\033[0m")
+        __diaryReadThrough__(doc, userData) # Automatically collects both 
+
+    return
+
 
 def isValidPage(userLink):
     if ((str(userLink)).find("letterboxd") == -1):
-        print("This is a not a letterboxd link")
-        return False
-    elif ((str(userLink)).find("/films/") != -1):
-        print("This is not the homepage")
-        return False
+        # This is a not a letterboxd link
+        return 1
+    elif ((str(userLink)).find("/films/") != -1 or (str(userLink)).find("/stats/") != -1 ):
+        # This is not the homepage
+        return 2
     try:
         result = requests.get(userLink)
         docTest = BeautifulSoup(result.text, "html.parser")
         if (docTest.find(attrs={"class" : "error message-dark"})):
-            print("No user account could be found")
-            return False
+            # No user account could be found
+            return 3
     except:
         print("that is not a valid page")
-    return True
+        return 4
+    return 0
     
-def main():
-    # Seeing if this is a valid web-page
-    PaidAccount = False
-    url = input("Please insert Web Page: ")
-    if (isValidPage(url) == False):
-        print("\033[1;31mPlease give link such as: https://letterboxd.com/USERNAME/ \033[0m")
-        return
-    os.system('cls')
+def dataCollector(url):
+    userData = {
+    'name': {
+        'accountName': '',
+        'userName': '',
+        'accountType': ''
+        },
+    'paidAccount': False, 
+    'ratingStats': [],
+    'favMovies': [],
+    'favGenres': {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
+             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
+               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0},
+    'favDirectors': {}
+    }
+    
     result = requests.get(url)
     doc = BeautifulSoup(result.text, "html.parser")
 
-    print(f"User: \033[1;32m{getAccountName(doc)}\033[0m ({getUserName(doc)})", end='\0')
     if (isPatron(doc) == True):
-        PaidAccount = True
-        print(" - \033[1;35mLetter Boxd Patron\033[0m")
+        userData['paidAccount'] = True
+        userData['name']['accountType'] = "Patron"
     elif (isPro(doc) == True):
-        PaidAccount = True
-        print(" - \033[1;35mLetter Boxd Pro\033[0m")
+        userData['paidAccount'] = True
+        userData['name']['accountType'] = "Pro"
     else: 
-        print(" - \033[1;35mStandard Account\033[0m")
+        userData['paidAccount'] = False
+        userData['name']['accountType'] = "Standard"
+
+    userData['name']['accountName'] = getAccountName(doc)
+    userData['name']['userName'] = getUserName(doc)
     
-    print("\033[1;33mRating Statistics:\033[0m")
-    ratingPercentages(doc)
-
-    print("\033[1;33mFavorite Movies:\033[0m")
-    favoriteMovies(doc)
-
-    print("\033[1;33mFavorite Movies Genres:\033[0m")
-    genreFunction(PaidAccount, doc)    
-
-    print("\033[1;33mFavorite Directors:\033[0m")
-    directorsFunction(PaidAccount, doc)
-
-
+    #ratingPercentages(doc, userData)
     
+    #favoriteMovies(doc, userData)
+    
+    # Genre and Directors collected in a single function to avoid repeated steps and shorten runtime
+    #pageData(userData['paidAccount'], doc, userData)
+    stat = statsPage(doc, userData)
+    thingy = stat.findAll("h1", attrs={"class":"yir-member-title"})
+    print(thingy)
+    return userData
 
-main()
 
-print("\033[1;32mThank You :)\033[0m")
+url = "https://letterboxd.com/schaffrillas/"
+dataCollector(url)
+
+
+'''
+result = requests.get("https://letterboxd.com/schaffrillas/stats/")
+doc = BeautifulSoup(result.text, "html.parser")
+
+userData = {
+    'favGenres': {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
+             "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
+               "Science Fiction":0, "Thriller":0, "TV Movie":0, "War":0, "Western":0}
+}
+'''
+
+
+#print(doc)
+
+#__paidGenresInfo__(doc, userData)
+# genreStats = doc.find("div", attrs={"class": "yir-genyir-film-breakdown-graphres"})
+# returns a none
+#print(genreStats)
+#__paidGenresInfo__(doc, userData)
+
+
+
+#print("\033[1;32mThank You :)\033[0m")
 #To run Code: python main.py

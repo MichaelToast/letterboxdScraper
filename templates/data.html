@@ -13,12 +13,12 @@
     <p>TYPE: {{ posts.accountType }}</p>
     <h3>RATINGS:</h3>
     {% for rating in posts.ratingStats %}
-        <p> {{ rating }} </p>
+        <p style="color: green;"> {{ rating }} </p>
     {% endfor %}
     
     <h3>FAVORITE MOVIES:</h3>
     {% for movie in posts.favMovies %}
-        <p> {{ movie }} </p>
+        <p style="color: rgb(37, 83, 173);"> {{ movie }} </p>
     {% endfor %}
 
     <!-- This line is completely wrong. Need to access the sub dir -->
@@ -31,7 +31,7 @@
     </ul>
 
     <h3>FAVORITE DIRECTORS:</h3>
-    {% for dir in posts.favDir %}
+    {% for dir in posts.favDirectors %}
         <p> {{ dir }} </p>
     {% endfor %}
     
