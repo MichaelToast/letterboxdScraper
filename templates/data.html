@@ -31,11 +31,10 @@
     </ul>
 
     <h3>FAVORITE DIRECTORS:</h3>
-    {% for dir in posts.favDirectors %}
-        <p> {{ dir }} </p>
+    {% for directorName, score in directors %}
+        <p> {{ directorName }} : {{ score }} </p>
     {% endfor %}
     
-
 
     
 </body>
