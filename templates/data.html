@@ -8,9 +8,9 @@
 <body style="background-color: #14181C; color: white">
     <h1>USER DATA</h1>
     <!--Flask uses Jinja for parameters-->
-    <h1>USER: {{ posts.name.accountName }}</h1>
+    <h1>ACOUNT NAME: {{ posts.name.accountName }}</h1>
     <h2>USER: {{ posts.name.userName }}</h2>
-    <p>TYPE: {{ posts.accountType }}</p>
+    <p>TYPE: {{ posts.name.accountType }}</p>
     <h3>RATINGS:</h3>
     {% for rating in posts.ratingStats %}
         <p style="color: green;"> {{ rating }} </p>

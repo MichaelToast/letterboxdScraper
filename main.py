@@ -1,6 +1,5 @@
 import time
 start_time = time.time()
-import os
 
 from bs4 import BeautifulSoup
 import requests
@@ -194,32 +193,5 @@ def dataCollector(url):
     favoriteMovies(doc, userData)
 
     pageData(userData['paidAccount'], doc, userData)
-    
-
 
     return userData
-    
-
-
-  
-
-
-#url = "https://letterboxd.com/schaffrillas/"
-#dataCollector(url)
-
-
-
-
-
-#print(doc)
-
-#__paidGenresInfo__(doc, userData)
-# genreStats = doc.find("div", attrs={"class": "yir-genyir-film-breakdown-graphres"})
-# returns a none
-#print(genreStats)
-#__paidGenresInfo__(doc, userData)
-
-
-
-#print("\033[1;32mThank You :)\033[0m")
-#To run Code: python main.py

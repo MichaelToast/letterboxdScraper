@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
+
+    <script>
+        function showLoadingGif() {
+            document.getElementById("loadingGif").style.display = "block";  // Show the GIF
+            document.getElementById("errorBlock").style.display = "none";  // Show the GIF
+        }
+
+        function hideLoadingGif() {
+            document.getElementById("loadingGif").style.display = "none";  // Hide the GIF
+        }
+    </script>
 </head>
 <body style="background-color: #14181C; color: white">
     <h1>Please give link</h1>
@@ -11,10 +22,14 @@
     <form action="{{ url_for("home") }}" method="post">
         <label for="flink">Page Link</label> <br>
         <input type="text" name="flink" id="flink"><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" onclick="showLoadingGif()">
     </form>
 
-    <div style="color: red;">
+    <div id="loadingGif" style="display: none;">
+        <img src="/static/assets/loading.gif" alt="Loading..." style="width: 10%"/>
+    </div>
+
+    <div id="errorBlock" style="color: red;">
         {% if errorMessage != 0 %}
             <h1> ERROR </h1>
             {% if errorMessage == 1 %}
@@ -30,7 +45,7 @@
                 <h1> Not a valid webpage </h1>
             {% endif %}
         {% endif %}
-        <h2 style="color: white;">Please give Enter a link</h2>
+        <h2 style="color: white;">Enter a link such as: https://letterboxd.com/USER/ </h2>
     </div>
     
 </body>
