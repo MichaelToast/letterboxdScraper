@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATA</title>
+</head>
+<body style="background-color: #14181C; color: white">
+    <h1>USER DATA</h1>
+    <!--Flask uses Jinja for parameters-->
+    <h1>USER: {{ posts.name.accountName }}</h1>
+    <h2>USER: {{ posts.name.userName }}</h2>
+    <p>TYPE: {{ posts.accountType }}</p>
+    <h3>RATINGS:</h3>
+    {% for rating in posts.ratingStats %}
+        <p style="color: green;"> {{ rating }} </p>
+    {% endfor %}
+    
+    <h3>FAVORITE MOVIES:</h3>
+    {% for movie in posts.favMovies %}
+        <p style="color: rgb(37, 83, 173);"> {{ movie }} </p>
+    {% endfor %}
+
+    <!-- This line is completely wrong. Need to access the sub dir -->
+    
+    <h3>FAVORITE GENRES:</h3>
+    <ul>
+        {% for genre, value in genres %}
+            <li>{{ genre }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>FAVORITE DIRECTORS:</h3>
+    {% for directorName, score in directors %}
+        <p> {{ directorName }} : {{ score }} </p>
+    {% endfor %}
+    
+
+    
+</body>
+</html>
