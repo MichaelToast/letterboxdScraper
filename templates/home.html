@@ -6,23 +6,24 @@
     <title>Home</title>
 
     <script>
-        function showLoadingGif() {
+        function showLoadingGif(event) {
+            event.preventDefault();  // Prevent form submission here
             document.getElementById("loadingGif").style.display = "block";  // Show the GIF
-            document.getElementById("errorBlock").style.display = "none";  // Show the GIF
-        }
+            document.getElementById("errorBlock").style.display = "none";   // Show the GIF
+            document.getElementById("submitBttn").disabled = true;
 
-        function hideLoadingGif() {
-            document.getElementById("loadingGif").style.display = "none";  // Hide the GIF
+            // Now submit the form after a slight delay to let the GIF display
+            document.getElementById("submitBttn").form.submit(); // Submit the form programmatically
         }
     </script>
 </head>
 <body style="background-color: #14181C; color: white">
     <h1>Please give link</h1>
 
-    <form action="{{ url_for("home") }}" method="post">
+    <form action="{{ url_for('home') }}" method="post">
         <label for="flink">Page Link</label> <br>
         <input type="text" name="flink" id="flink"><br>
-        <input type="submit" value="Submit" onclick="showLoadingGif()">
+        <input type="submit" value="Submit" id="submitBttn" onclick="showLoadingGif(event)">
     </form>
 
     <div id="loadingGif" style="display: none;">
@@ -33,7 +34,7 @@
         {% if errorMessage != 0 %}
             <h1> ERROR </h1>
             {% if errorMessage == 1 %}
-                <h1> This is a not a letterboxd link </h1>
+                <h1> This is not a letterboxd link </h1>
             {% endif %}
             {% if errorMessage == 2 %}
                 <h1> This is not the homepage </h1>
@@ -47,6 +48,6 @@
         {% endif %}
         <h2 style="color: white;">Enter a link such as: https://letterboxd.com/USER/ </h2>
     </div>
-    
+
 </body>
 </html>

@@ -28,12 +28,15 @@ numberPercentages = [] # (1%)
 ratingData = []
 def ratingPercentages(doc, userData):
     ratings = doc.findAll("li", attrs={"class": "rating-histogram-bar"})
+    print("RATINGS")
+    print(ratings)
     for rating in ratings:
-        section = (rating.text.strip() )
-        ratingData.append(section)
+        section = (rating.text.strip())
+        if (section != ''):
+            ratingData.append(section)
             # Lists are made incase they are need seprate for the graphic 
-        #numberRatings.append(__extractRatingCount__(section))
-        #numberPercentages.append(__extractRatingPercentage__(section))
+            #numberRatings.append(__extractRatingCount__(section))
+            #numberPercentages.append(__extractRatingPercentage__(section))
     if (len(ratings) == 0):
         return # User Has not rated any movies.
     userData["ratingStats"] = ratingData

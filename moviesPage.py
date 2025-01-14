@@ -16,9 +16,7 @@ def home():
             print(f'{userData['name']['accountName']}')
             topGenres = sorted(userData['favGenres'].items(), key=lambda x: x[1], reverse=True)[:10]
             topDirectors = sorted(userData['favDirectors'].items(), key=lambda x: x[1], reverse=True)[:5]
-            print(topDirectors)
-            for directorName, score in topDirectors:
-                print(" * " + directorName + " - " + " score ")
+            print(userData['ratingStats'])
             # Now, I have to pass the link through the data collection functions
             return render_template('data.html', posts=userData, genres=topGenres, directors=topDirectors)
     return render_template('home.html', errorMessage=message)
