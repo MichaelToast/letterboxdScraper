@@ -166,6 +166,8 @@ def dataCollector(url):
         'userName': '',
         'accountType': ''
         },
+    'pfp': '',
+    'bio': '',
     'paidAccount': False, 
     'ratingStats': [],
     'favMovies': [],
@@ -177,6 +179,10 @@ def dataCollector(url):
     
     result = requests.get(url)
     doc = BeautifulSoup(result.text, "html.parser")
+
+    pfp = (doc.find("span", attrs={"class":"avatar -a110 -large"})).find('img')
+    userData['pfp'] = pfp['src']
+
 
     if (isPatron(doc) == True):
         userData['paidAccount'] = True
@@ -190,6 +196,8 @@ def dataCollector(url):
 
     userData['name']['accountName'] = getAccountName(doc)
     userData['name']['userName'] = getUserName(doc)
+
+    return userData
 
     ratingPercentages(doc, userData)
 

@@ -1,0 +1,57 @@
+* {
+    color: white;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #14181C;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 20px 9%;
+}
+
+.logo {
+    cursor: pointer;
+    font-size: 40px;
+}
+
+body {
+    background-color: #181D22;
+}
+
+main {
+    padding: 25px 50px 75px 100px;
+}
+
+#userInfo {
+    background-color: #1F262E;
+    border-radius: 25px;
+    padding: 40px;
+
+    display: flex;
+    align-items: flex-start;
+}
+
+#pfp {
+    width: 155px;
+    border-radius: 50%;
+    margin-right: 50px;
+}
+
+#userInfo ul {
+    list-style-type: none;
+
+}
+
+
+
+#accountName {
+    font-size: 80px;
+}
+
+#userName {
+    font-size: 30px;
+}

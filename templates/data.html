@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static\style\style.css">
     <title>DATA</title>
 </head>
-<body style="background-color: #14181C; color: white">
-    <h1>USER DATA</h1>
+<body>
+
+    <header>
+        <h1 class="logo">StatsForLetterboxd</h1>
+    </header>
+
+    <main>
+        <div id="userInfo"> 
+            <img src="{{ posts.pfp }}" alt="ProfilePic" id="pfp">
+            <ul id="accountTitles">
+                <li><p id="accountName">{{ posts.name.accountName }}</p></li>
+                <li><p id="userName">@{{ posts.name.userName }}</p></li>
+            </ul>
+        </div>
+        <p id="AccountName">THERE IS TEXT HERE</p>
+    </main>
+    
+
     <!--Flask uses Jinja for parameters-->
-    <h1>ACOUNT NAME: {{ posts.name.accountName }}</h1>
-    <h2>USER: {{ posts.name.userName }}</h2>
+
+
+
+    
     <p>TYPE: {{ posts.name.accountType }}</p>
     <h3>RATINGS:</h3>
     {% for rating in posts.ratingStats %}
