@@ -35,6 +35,10 @@ main {
     align-items: flex-start;
 }
 
+#accountTitles {
+    float:left;
+}
+
 #pfp {
     width: 155px;
     border-radius: 50%;
@@ -43,9 +47,7 @@ main {
 
 #userInfo ul {
     list-style-type: none;
-
 }
-
 
 
 #accountName {

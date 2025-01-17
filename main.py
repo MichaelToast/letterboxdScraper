@@ -183,7 +183,6 @@ def dataCollector(url):
     pfp = (doc.find("span", attrs={"class":"avatar -a110 -large"})).find('img')
     userData['pfp'] = pfp['src']
 
-
     if (isPatron(doc) == True):
         userData['paidAccount'] = True
         userData['name']['accountType'] = "Patron"
@@ -196,6 +195,11 @@ def dataCollector(url):
 
     userData['name']['accountName'] = getAccountName(doc)
     userData['name']['userName'] = getUserName(doc)
+
+    bioBlock = (doc.find('section', attrs={"class":"profile-person-bio section"}))
+    if (bioBlock != None):
+        bioBlock = bioBlock.find('p').text
+    userData['bio'] = bioBlock
 
     return userData
 
