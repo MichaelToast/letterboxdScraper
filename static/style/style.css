@@ -1,59 +1,65 @@
-* {
-    color: white;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    background-color: #14181C;
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
-    padding: 20px 9%;
-}
-
-.logo {
-    cursor: pointer;
-    font-size: 40px;
-}
-
 body {
-    background-color: #181D22;
+	margin: 0;
+    background-color: #ffffff;
+    font-family: 'Helvetica', Arial, sans-serif;
+	font-size: 18px;
+	line-height: 1.5;
 }
 
-main {
-    padding: 25px 50px 75px 100px;
+.masthead {
+    padding: 1em 2em;
+	background: #2185C5;
+	color: white;
 }
 
-#userInfo {
-    background-color: #1F262E;
-    border-radius: 25px;
-    padding: 40px;
-
-    display: flex;
-    align-items: flex-start;
+.wrapper {
+    padding: 1em;
+    display: grid;
+    grid-gap: .5em .5em;
+    grid-template-columns: 1fr repeat(6, minmax(auto, 10em)) 1fr;
+	grid-template-rows: minmax(1em, auto) 1fr auto minmax(1em, auto);
 }
 
-#accountTitles {
-    float:left;
+.wrapper > div{
+    padding: 1em;
+    border-radius: 1em;
 }
 
-#pfp {
-    width: 155px;
-    border-radius: 50%;
-    margin-right: 50px;
+.main-content {
+    background-color: rgb(127, 202, 255);
+    grid-column: 1/9;
 }
 
-#userInfo ul {
-    list-style-type: none;
+.user-bio {
+    background-color: rgb(95, 175, 232);
+    grid-column: 1/7;
 }
 
-
-#accountName {
-    font-size: 80px;
+.fav-movies {
+    background-color: rgb(149, 205, 245);
+    grid-column: 7/9;
+    grid-row: 2/4;
 }
 
-#userName {
-    font-size: 30px;
+.genre-info {
+    background-color: rgb(104, 165, 208);
+    grid-column: 1/7;
+}
+
+.rating-data {
+	background-color: rgb(95, 175, 232);
+	grid-column: 1/9;
+}
+
+footer {
+    padding: 1em 2em;
+	background: #2185C5;
+	color: white;
+}
+
+img {
+    width: 100px;
+    border-radius: 50px;
+    float: left;
+    margin-right: 20px;
 }

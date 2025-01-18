@@ -7,53 +7,66 @@
     <title>DATA</title>
 </head>
 <body>
+    <div class="site">
+        <header class="masthead">
+            <h2 id="siteTitle">StatsForLetterboxd</h2>
+        </header>
 
-    <header>
-        <h1 class="logo">StatsForLetterboxd</h1>
-    </header>
+        <div class="wrapper">
+            <div class="main-content">
+                <img src="{{ posts.pfp }}" alt="ProfilePic" id="pfp">
+                <ul id="accountTitles">
+                    <li><p id="accountName">{{ posts.name.accountName }}</p></li>
+                    <li><p id="userName">@{{ posts.name.userName }}</p></li>
+                </ul>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
+            </div>
 
-    <main>
-        <div id="userInfo"> 
-            <img src="{{ posts.pfp }}" alt="ProfilePic" id="pfp">
-            <ul id="accountTitles">
-                <li><p id="accountName">{{ posts.name.accountName }}</p></li>
-                <li><p id="userName">@{{ posts.name.userName }}</p></li>
-            </ul>
+            <div class="user-bio">
+                <p>TYPE: {{ posts.name.accountType }}</p>
+                <p>BIO: {{ posts.name.bio }}</p>
+                <p>USER BIO: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
+            </div>
+
+            <div class="fav-movies">
+                <h3>FAVORITE MOVIES:</h3>
+                {% for movie in posts.favMovies %}
+                    <p style="color: rgb(37, 83, 173);"> {{ movie }} </p>
+                {% endfor %}
+                <p> FAV USER PROFILE: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
+            </div>
+
+            <div class="genre-info">
+                <h3>FAVORITE GENRES:</h3>
+                <ul>
+                    {% for genre, value in genres %}
+                        <li>{{ genre }}: {{ value }}</li>
+                    {% endfor %}
+                </ul>
+                <p>GENRE USER PROFILE: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
+            </div>
+
+            <div class="rating-data"> 
+                <h3>RATINGS:</h3>
+                {% for rating in posts.ratingStats %}
+                    <p style="color: green;"> {{ rating }} </p>
+                {% endfor %}
+                        
+                <h3>FAVORITE DIRECTORS:</h3>
+                {% for directorName, score in directors %}
+                    <p> {{ directorName }} : {{ score }} </p>
+                {% endfor %}
+
+            </div>
         </div>
-        <p id="AccountName">THERE IS TEXT HERE</p>
-    </main>
-    
+        
 
-    <!--Flask uses Jinja for parameters-->
+        <!--Flask uses Jinja for parameters-->
 
 
 
     
-    <p>TYPE: {{ posts.name.accountType }}</p>
-    <h3>RATINGS:</h3>
-    {% for rating in posts.ratingStats %}
-        <p style="color: green;"> {{ rating }} </p>
-    {% endfor %}
-    
-    <h3>FAVORITE MOVIES:</h3>
-    {% for movie in posts.favMovies %}
-        <p style="color: rgb(37, 83, 173);"> {{ movie }} </p>
-    {% endfor %}
-
-    <!-- This line is completely wrong. Need to access the sub dir -->
-    
-    <h3>FAVORITE GENRES:</h3>
-    <ul>
-        {% for genre, value in genres %}
-            <li>{{ genre }}: {{ value }}</li>
-        {% endfor %}
-    </ul>
-
-    <h3>FAVORITE DIRECTORS:</h3>
-    {% for directorName, score in directors %}
-        <p> {{ directorName }} : {{ score }} </p>
-    {% endfor %}
-    
+    </div>
 
     
 </body>
