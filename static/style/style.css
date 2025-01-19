@@ -6,13 +6,17 @@ body {
 	line-height: 1.5;
 }
 
+.masthead, footer {
+    background-color: #14181C;
+}
+
 .masthead {
     padding: 1em 2em;
-	background: #2185C5;
 	color: white;
 }
 
 .wrapper {
+    background-color: #181D22;
     padding: 1em;
     display: grid;
     grid-gap: .5em;
@@ -23,37 +27,33 @@ body {
 .wrapper > div{
     padding: 1em;
     border-radius: 1em;
+    background-color: #1F262D;
+    color: white;
 }
 
 .main-content {
-    background-color: rgb(127, 202, 255);
     grid-column: 1/9;
 }
 
 .user-bio {
-    background-color: rgb(95, 175, 232);
     grid-column: 1/7;
 }
 
 .fav-movies {
-    background-color: rgb(149, 205, 245);
     grid-column: 7/9;
     grid-row: 2/4;
 }
 
 .genre-info {
-    background-color: rgb(104, 165, 208);
     grid-column: 1/7;
 }
 
 .rating-data {
-	background-color: rgb(95, 175, 232);
 	grid-column: 1/9;
 }
 
 footer {
     padding: 1em 2em;
-	background: #2185C5;
 	color: white;
 }
 
