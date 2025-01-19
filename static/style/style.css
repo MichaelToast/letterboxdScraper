@@ -15,9 +15,9 @@ body {
 .wrapper {
     padding: 1em;
     display: grid;
-    grid-gap: .5em .5em;
-    grid-template-columns: 1fr repeat(6, minmax(auto, 10em)) 1fr;
-	grid-template-rows: minmax(1em, auto) 1fr auto minmax(1em, auto);
+    grid-gap: .5em;
+    grid-template-columns: 1fr repeat(6, minmax(auto, 10em)) 1fr; /* 8 columns */
+    grid-template-rows: minmax(1em, auto) 1fr auto minmax(1em, auto);
 }
 
 .wrapper > div{
@@ -63,3 +63,39 @@ img {
     float: left;
     margin-right: 20px;
 }
+
+
+
+@media screen and (max-width: 768px) {
+    .wrapper {
+        grid-template-columns: 1fr;  /* Single column layout */
+        grid-template-rows: repeat(4, auto);  /* Stack sections vertically */
+    }
+
+    .main-content {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    .user-bio {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    .fav-movies {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    .genre-info {
+        grid-column: 1;  /* All sections take the full width */
+        grid-row: inherit;
+    }
+
+    .rating-data {
+        grid-column: 1;
+        grid-row: inherit;
+    }
+}
+
+
+
+
+

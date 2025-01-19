@@ -25,7 +25,6 @@
             <div class="user-bio">
                 <p>TYPE: {{ posts.name.accountType }}</p>
                 <p>BIO: {{ posts.name.bio }}</p>
-                <p>USER BIO: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
             </div>
 
             <div class="fav-movies">
@@ -47,7 +46,7 @@
             </div>
 
             <div class="rating-data"> 
-                <h3>RATINGS:</h3>
+                <h3>RATINGS: DATA</h3>
                 {% for rating in posts.ratingStats %}
                     <p style="color: green;"> {{ rating }} </p>
                 {% endfor %}
@@ -56,7 +55,6 @@
                 {% for directorName, score in directors %}
                     <p> {{ directorName }} : {{ score }} </p>
                 {% endfor %}
-
             </div>
         </div>
         
