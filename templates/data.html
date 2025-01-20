@@ -19,12 +19,11 @@
                     <li><h1 id="accountName">{{ posts.name.accountName }}</h1></li>
                     <li><h2 id="userName">@{{ posts.name.userName }}</h2></li>
                 </ul>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
             </div>
 
             <div class="user-bio">
-                <p>TYPE: {{ posts.name.accountType }}</p>
-                <p>BIO: {{ posts.name.bio }}</p>
+                <span id="user-type" class='{{"pro" if posts.name.accountType == 'Pro' else 'patron' if posts.name.accountType == 'Patron' else 'standard'}}'>{{ posts.name.accountType }}</span>
+                <p>"<i>{{ posts.bio }}</i>"</p>
             </div>
 
             <div class="fav-movies">
@@ -58,7 +57,6 @@
             </div>
         </div>
         
-
         <!--Flask uses Jinja for parameters-->
         <footer>
             <h3>Thank you</h3>

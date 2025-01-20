@@ -197,8 +197,10 @@ def dataCollector(url):
     userData['name']['userName'] = getUserName(doc)
 
     bioBlock = (doc.find('section', attrs={"class":"profile-person-bio section"}))
+    #print(bioBlock)
     if (bioBlock != None):
-        bioBlock = bioBlock.find('p').text
+        bioBlock = bioBlock.find('p').text.strip()
+        print(bioBlock)
     userData['bio'] = bioBlock
 
     return userData

@@ -37,6 +37,7 @@ body {
 
 .user-bio {
     grid-column: 1/7;
+    grid-row: auto;
 }
 
 .fav-movies {
@@ -58,12 +59,53 @@ footer {
 }
 
 img {
-    width: 100px;
-    border-radius: 50px;
+    width: 150px;
+    border-radius: 75px;
     float: left;
     margin-right: 20px;
 }
 
+#accountTitles {
+    list-style: none;
+    margin-top: 0;
+}
+
+#accountTitles h1 {
+    font-size: 50px;
+    margin: 0;
+    padding: 0;
+}
+
+#accountTitles h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.user-bio {
+    text-align: center;
+}
+
+
+.standard, .patron, .pro {
+    position: relative;
+    display: inline-block;
+    border: 12em;
+    padding: 12px;
+    border: 20px;
+    border-radius: 3px;
+}
+
+.standard {
+    background-color: #40BCF4;
+}
+
+.patron {
+    background-color: #FF8000;
+}
+
+.pro {
+    background-color: #00E054;
+}
 
 
 @media screen and (max-width: 768px) {

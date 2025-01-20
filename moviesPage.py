@@ -13,7 +13,7 @@ def home():
         message = isValidPage(pageLink)
         if (message == 0):
             userData = dataCollector(pageLink)
-            print(f'{userData['name']['accountName']}')
+            # print(f'{userData['name']['accountName']}')
             topGenres = sorted(userData['favGenres'].items(), key=lambda x: x[1], reverse=True)[:10]
             topDirectors = sorted(userData['favDirectors'].items(), key=lambda x: x[1], reverse=True)[:5]
             print(userData['ratingStats'])
