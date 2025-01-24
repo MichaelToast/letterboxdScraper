@@ -93,6 +93,7 @@ img {
     padding: 12px;
     border: 20px;
     border-radius: 3px;
+    font-weight: bold;
 }
 
 .standard {
@@ -107,11 +108,19 @@ img {
     background-color: #00E054;
 }
 
+#key {
+    font-weight: bold;
+}
+
+#value {
+    font-style: italic;
+}
 
 @media screen and (max-width: 768px) {
     .wrapper {
-        grid-template-columns: 1fr;  /* Single column layout */
-        grid-template-rows: repeat(4, auto);  /* Stack sections vertically */
+        /* Single column layout */
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, auto);
     }
 
     .main-content {

@@ -28,8 +28,6 @@ numberPercentages = [] # (1%)
 ratingData = []
 def ratingPercentages(doc, userData):
     ratings = doc.findAll("li", attrs={"class": "rating-histogram-bar"})
-    print("RATINGS")
-    print(ratings)
     for rating in ratings:
         section = (rating.text.strip())
         if (section != ''):
@@ -66,6 +64,22 @@ def getUserName(doc):
 def getAccountName(doc):
     accountName =(doc.find("span", attrs={"class": "displayname tooltip"}))
     return (accountName["title"])
+
+def totalRatings(doc, userData):
+    dataBlocks = (doc.find('div', attrs={"class":"profile-stats js-profile-stats"})).findAll("h4")
+
+    for block in dataBlocks:
+        value = block.find('span', class_='value').text
+        definition = block.find('span', class_='definition').text
+        userData['profileStats'][definition] = value
+    return
+
+def getBio(doc, userData):
+    bioBlock = (doc.find('section', attrs={"class":"profile-person-bio section"}))
+    if (bioBlock != None):
+        bioBlock = bioBlock.find('p').text.strip()
+    userData['bio'] = bioBlock
+
 
 # Collecting Genres and Directors
 def __diaryReadThrough__(doc, userData):
@@ -169,6 +183,7 @@ def dataCollector(url):
     'pfp': '',
     'bio': '',
     'paidAccount': False, 
+    'profileStats': {},
     'ratingStats': [],
     'favMovies': [],
     'favGenres': {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
@@ -196,12 +211,8 @@ def dataCollector(url):
     userData['name']['accountName'] = getAccountName(doc)
     userData['name']['userName'] = getUserName(doc)
 
-    bioBlock = (doc.find('section', attrs={"class":"profile-person-bio section"}))
-    #print(bioBlock)
-    if (bioBlock != None):
-        bioBlock = bioBlock.find('p').text.strip()
-        print(bioBlock)
-    userData['bio'] = bioBlock
+    getBio(doc, userData)
+    totalRatings(doc, userData)
 
     return userData
 

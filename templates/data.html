@@ -22,8 +22,18 @@
             </div>
 
             <div class="user-bio">
-                <span id="user-type" class='{{"pro" if posts.name.accountType == 'Pro' else 'patron' if posts.name.accountType == 'Patron' else 'standard'}}'>{{ posts.name.accountType }}</span>
+                <span id="user-type" class='{{"pro" if posts.name.accountType == 'Pro' else 'patron' if posts.name.accountType == 'Patron' else 'standard'}}'>{{ posts.name.accountType | upper }}</span>
                 <p>"<i>{{ posts.bio }}</i>"</p>
+                <p>
+                    {% for key, val in posts.profileStats.items() %}
+                    <span>
+                        <span id="key">{{ key }}</span>: <span id="value">{{ val }}</span> 
+                        {% if not loop.last %}
+                            <span style="font-weight: bold;">|</span>
+                        {% endif %} 
+                    </span>
+                    {% endfor %}
+                </p>
             </div>
 
             <div class="fav-movies">
