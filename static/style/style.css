@@ -1,7 +1,18 @@
+@font-face { 
+    font-family: 'IntelOneMono-Regular'; 
+    Src: url('https://raw.githubusercontent.com/intel/intel-one-mono/blob/main/fonts/woff/IntelOneMono-Regular.woff') format('truetype'); 
+    src: url('https://cdn.rawgit.com/intel/intel-one-mono/main/fonts/woff/IntelOneMono-Regular.woff') format('woff');
+    font-weight: 100; 
+}
+
+div {
+    font-family:'IntelOneMono-Regular';
+}
+
 body {
 	margin: 0;
     background-color: #ffffff;
-    font-family: 'Helvetica', Arial, sans-serif;
+    font-family: "IntelOneMono-Regular", 'Helvetica', Arial, sans-serif;
 	font-size: 18px;
 	line-height: 1.5;
 }
@@ -85,7 +96,6 @@ img {
     text-align: center;
 }
 
-
 .standard, .patron, .pro {
     position: relative;
     display: inline-block;
@@ -114,6 +124,15 @@ img {
 
 #value {
     font-style: italic;
+}
+
+a {
+    color: aliceblue;
+}
+
+a:hover {
+    font-weight: bold;
+    color: #40BCF4;
 }
 
 @media screen and (max-width: 768px) {
