@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static\style\homestyle.css">
     <title>Home</title>
 
     <script>
@@ -17,37 +18,48 @@
         }
     </script>
 </head>
-<body style="background-color: #14181C; color: white">
-    <h1>Please give link</h1>
+<body>
+    <div id="formBlock">
+        <div id="titles">
+            <h1 id="siteTitle">StatsForLetterboxd</h1>
+            <h2 id="smallDescription">It's statistics... for your Letterboxd.</h2>
+            <div id="subDisclaimer">No subscription required.</div>
+        </div>
 
-    <form action="{{ url_for('home') }}" method="post">
-        <label for="flink">Page Link</label> <br>
-        <input type="text" name="flink" id="flink"><br>
-        <input type="submit" value="Submit" id="submitBttn" onclick="showLoadingGif(event)">
-    </form>
+        <form action="{{ url_for('home') }}" method="post">
+            <input type="text" name="flink" id="flink" placeholder="https://letterboxd.com/USER/" ><br>
+            <input type="submit" value="Submit" id="submitBttn" onclick="showLoadingGif(event)">
+        </form>
 
-    <div id="loadingGif" style="display: none;">
-        <img src="/static/assets/loading.gif" alt="Loading..." style="width: 10%"/>
+        <div id="loadingGif" style="display: none;">
+            <img src="/static/assets/loading.gif" alt="Loading..." style="width: 10%"/>
+        </div>
+
+        <div id="errorBlock" style="color: red;">
+            {% if errorMessage != 0 %}
+                <h1 style="padding-bottom: 0; margin-bottom: 0;"> ERROR </h1>
+                <div id="errorDescription">
+                    {% if errorMessage == 1 %}
+                        <h2> This is not a letterboxd link </h2>
+                    {% endif %}
+                    {% if errorMessage == 2 %}
+                        <h2> This is not the homepage </h2>
+                    {% endif %}
+                    {% if errorMessage == 3 %}
+                        <h2> No user account could be found </h2>
+                    {% endif %}
+                    {% if errorMessage == 4 %}
+                        <h2> Not a valid webpage </h2>
+                    {% endif %}
+                </div>
+            {% endif %}
+            <h3 style="color: white; padding: 0; margin: 0;">Enter a link such as: https://letterboxd.com/USER/ </h3>
+        </div>
     </div>
 
-    <div id="errorBlock" style="color: red;">
-        {% if errorMessage != 0 %}
-            <h1> ERROR </h1>
-            {% if errorMessage == 1 %}
-                <h1> This is not a letterboxd link </h1>
-            {% endif %}
-            {% if errorMessage == 2 %}
-                <h1> This is not the homepage </h1>
-            {% endif %}
-            {% if errorMessage == 3 %}
-                <h1> No user account could be found </h1>
-            {% endif %}
-            {% if errorMessage == 4 %}
-                <h1> Not a valid webpage </h1>
-            {% endif %}
-        {% endif %}
-        <h2 style="color: white;">Enter a link such as: https://letterboxd.com/USER/ </h2>
-    </div>
+    <footer>
+        <div>Footer </div>
+    </footer>
 
 </body>
 </html>

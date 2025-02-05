@@ -5,10 +5,6 @@
     font-weight: 100; 
 }
 
-div {
-    font-family:'IntelOneMono-Regular';
-}
-
 body {
 	margin: 0;
     background-color: #ffffff;
@@ -42,25 +38,25 @@ body {
     color: white;
 }
 
-.main-content {
+.mainContent {
     grid-column: 1/9;
 }
 
-.user-bio {
+.userBio {
     grid-column: 1/7;
     grid-row: auto;
 }
 
-.fav-movies {
+.favMovies {
     grid-column: 7/9;
     grid-row: 2/4;
 }
 
-.genre-info {
+.genreInfo {
     grid-column: 1/7;
 }
 
-.rating-data {
+.ratingData {
 	grid-column: 1/9;
 }
 
@@ -92,7 +88,7 @@ img {
     padding: 0;
 }
 
-.user-bio {
+.userBio {
     text-align: center;
 }
 
@@ -142,24 +138,24 @@ a:hover {
         grid-template-rows: repeat(4, auto);
     }
 
-    .main-content {
+    .mainContent {
         grid-column: 1;
         grid-row: 1;
     }
-    .user-bio {
+    .userBio {
         grid-column: 1;
         grid-row: 2;
     }
-    .fav-movies {
+    .favMovies {
         grid-column: 1;
         grid-row: 3;
     }
-    .genre-info {
+    .genreInfo {
         grid-column: 1;  /* All sections take the full width */
         grid-row: inherit;
     }
 
-    .rating-data {
+    .ratingData {
         grid-column: 1;
         grid-row: inherit;
     }

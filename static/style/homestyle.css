@@ -1,0 +1,81 @@
+@font-face { 
+    font-family: 'IntelOneMono-Regular'; 
+    Src: url('https://raw.githubusercontent.com/intel/intel-one-mono/blob/main/fonts/woff/IntelOneMono-Regular.woff') format('truetype'); 
+    src: url('https://cdn.rawgit.com/intel/intel-one-mono/main/fonts/woff/IntelOneMono-Regular.woff') format('woff');
+    font-weight: 100; 
+}
+
+body {
+	margin: 0;
+    background-color: #30274b;
+    font-family: 'IntelOneMono-Regular', 'Helvetica', Arial, sans-serif;
+	font-size: 18px;
+	line-height: 1.5;
+}
+
+#formBlock {
+	margin: 1.5em;
+	border-radius: 1em;
+	text-align: center;
+	align-self: center;
+	background: #1d1933;
+	height: 700px;
+	color: white;
+}
+
+#titles {
+	padding: 50px;
+	color: rgb(255, 255, 255);
+}
+
+#siteTitle {
+	font-size: 5.5em;
+	margin: 0;
+	padding: 0;
+}
+
+#smallDescription {
+	margin: 0;
+}
+
+#subDisclaimer {
+	font-size: small;
+	margin: 0;
+}
+
+#flink {
+	width: 50%;
+	padding: 7px;
+	font-size: 2em;
+	text-align: center;
+	border: none;
+    border-radius: 5px;
+	border-bottom: 1px solid;
+	color: white;
+	font-weight: bold;
+	background-color: transparent;
+	cursor: pointer;
+	outline: none;
+}
+
+#submitBttn {
+	margin: 2em;
+	padding: 9px;
+	border: none;
+	border-radius: 5px;
+	font-weight: bold;
+}
+
+#errorDescription {
+    font-style: italic;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+#errorDescription h2 {
+    margin: 0;
+}
+
+
+

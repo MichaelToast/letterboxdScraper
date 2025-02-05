@@ -9,11 +9,11 @@
 <body>
     <div class="site">
         <header class="masthead">
-            <h2 id="siteTitle">StatsForLetterboxd</h2>
+            <h1 id="siteTitle">StatsForLetterboxd</h1>
         </header>
 
         <div class="wrapper">
-            <div class="main-content">
+            <div class="mainContent">
                 <img src="{{ posts.pfp }}" alt="ProfilePic" id="pfp">
                 <ul id="accountTitles">
                     <li><h1 id="accountName">{{ posts.name.accountName }}</h1></li>
@@ -21,7 +21,7 @@
                 </ul>
             </div>
 
-            <div class="user-bio">
+            <div class="userBio">
                 <span id="user-type" class='{{"pro" if posts.name.accountType == 'Pro' else 'patron' if posts.name.accountType == 'Patron' else 'standard'}}'>{{ posts.name.accountType | upper }}</span>
                 <p>"<i>{{ posts.bio }}</i>"</p>
                 <p>
@@ -36,7 +36,7 @@
                 </p>
             </div>
 
-            <div class="fav-movies">
+            <div class="favMovies">
                 <h3>FAVORITE MOVIES:</h3>
                 {% for movie in posts.favMovies %}
                     <p style="color: rgb(37, 83, 173);"> {{ movie }} </p>
@@ -44,7 +44,7 @@
                 <p> FAV USER PROFILE: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
             </div>
 
-            <div class="genre-info">
+            <div class="genreInfo">
                 <h3>FAVORITE GENRES:</h3>
                 <ul>
                     {% for genre, value in genres %}
@@ -54,7 +54,7 @@
                 <p>GENRE USER PROFILE: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dignissimos accusamus laboriosam quae aliquid iure quis sunt cupiditate illum maxime omnis nisi vel sapiente veritatis molestias porro ratione iusto eaque expedita iste tempora, dolore quam doloremque id. Adipisci nobis rem dolor quisquam, quo aliquid quam, assumenda incidunt accusamus quae magni nisi!</p>
             </div>
 
-            <div class="rating-data"> 
+            <div class="ratingData"> 
                 <h3>RATINGS: DATA</h3>
                 {% for rating in posts.ratingStats %}
                     <p style="color: green;"> {{ rating }} </p>
