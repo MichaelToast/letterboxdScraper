@@ -5,6 +5,12 @@
     font-weight: 100; 
 }
 
+.chakra-petch-semibold {
+	font-family: "Chakra Petch", serif;
+	font-weight: 600;
+	font-style: normal;
+  }
+
 body {
 	margin: 0;
     background-color: #30274b;
