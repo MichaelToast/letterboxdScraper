@@ -22,6 +22,7 @@
     </script>
 </head>
 <body>
+    <br style="padding: 1rem;">
     <div id="formBlock">
         <div id="titles">
             <h1 id="siteTitle" class="chakra-petch-semibold">StatsForLetterboxd</h1>
@@ -40,7 +41,7 @@
 
         <div id="errorBlock" style="color: red;">
             {% if errorMessage != 0 %}
-                <h1 style="padding-bottom: 0; margin-bottom: 0;"> ERROR </h1>
+                <h1 style="padding-bottom: 0; margin: 0;"> ERROR </h1>
                 <div id="errorDescription">
                     {% if errorMessage == 1 %}
                         <h2> This is not a letterboxd link </h2>
@@ -57,11 +58,19 @@
                 </div>
             {% endif %}
             <h3 style="color: white; padding: 0; margin: 0;">Enter a link such as: https://letterboxd.com/USER/ </h3>
+            <br>
         </div>
     </div>
 
     <footer>
-        <div>Footer </div>
+        <div id="footer-block">
+            Discover your Letterboxd habits like never before with StatsForLetterboxd! Explore personalized insite into your top films, favorite actors, directiors, most-watched genres, and more with no subscription required.
+            Created by love by Michael Toast and Cody Bridgewater
+        </div>
+        <div id="footer-block">
+            StatsForLetterboxd is an independent platform and is not endorsed, affiliated with, maintained, or sponsored by Letterboxd. All trademarks, including Letterboxd, are the property of their respective owners.
+            Data provided by Letterboxd. Images provided by IMDB.
+        </div>
     </footer>
 
 </body>

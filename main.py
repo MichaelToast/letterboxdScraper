@@ -172,6 +172,12 @@ def isValidPage(userLink):
         print("that is not a valid page")
         return 4
     return 0
+
+def recentActivity(doc, userData):
+    idBlock = doc.find("section", attrs={"id": "recent-activity"})
+    print("idBlock: ")
+    print(idBlock)
+    # Need to read the posters or poster names
     
 def dataCollector(url):
     userData = {
@@ -185,6 +191,7 @@ def dataCollector(url):
     'paidAccount': False, 
     'profileStats': {},
     'ratingStats': [],
+    'recent': {},
     'favMovies': [],
     'favGenres': {"Action": 0, "Adventure":0, "Animation":0, "Comedy":0, "Crime":0, "Documentary":0,
              "Drama":0, "Family":0, "Fantasy":0, "History":0, "Horror":0, "Music":0, "Mystery":0, "Romance":0,
@@ -213,6 +220,7 @@ def dataCollector(url):
 
     getBio(doc, userData)
     totalRatings(doc, userData)
+    recentActivity(doc, userData)
 
     return userData
 
